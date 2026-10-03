@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Forever Memories Travel</title>
+  <meta name="description" content="Forever Memories Travel is a Colorado Springs travel agency for family vacations, theme parks, cruises, and international travel.">
+  <link rel="icon" href="assets/logo.jpg" type="image/jpeg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Nunito+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#content">Skip to content</a>
+  <header class="site-header">
+    <p class="eyebrow">Colorado Springs travel agency</p>
+    <img class="logo" src="assets/logo.jpg" alt="Forever Memories Travel. Family vacations, theme parks, cruises, and international travel.">
+    <nav class="nav" aria-label="Primary">
+      <a href="#vacations">Family vacations</a>
+      <a href="#parks">Theme parks</a>
+      <a href="#cruises">Cruises</a>
+      <a href="#international">International</a>
+      <a class="nav-plan" href="#plan">Plan a trip</a>
+    </nav>
+  </header>
+
+  <main id="content">
+    <section class="intro">
+      <div class="wrap narrow">
+        <h1>Vacations planned around the people going.</h1>
+        <p class="lede">Forever Memories Travel is a travel agency and vacation consultancy. Tell us the group, the kind of trip, and the dates you have in mind. We shape the plan with you.</p>
+        <p><a class="button" href="#plan">Start a trip request</a></p>
+      </div>
+    </section>
+
+    <section class="services" aria-label="What we plan">
+      <div class="wrap">
+        <article id="vacations">
+          <p class="kicker">Family vacations</p>
+          <h2>The trip fits the family, not the other way around.</h2>
+          <p>Who is coming, how you like to spend a day, and what you want to skip. The plan follows that, from the first night to the ride home.</p>
+        </article>
+        <article id="parks">
+          <p class="kicker">Theme parks</p>
+          <h2>Park days with room to breathe.</h2>
+          <p>Tickets, park order, and the hours between the gates. A castle day can be the whole point, or one piece of a longer vacation.</p>
+        </article>
+        <article id="cruises">
+          <p class="kicker">Cruises</p>
+          <h2>The ship, the ports, and the week between them.</h2>
+          <p>We sort the sailing, the cabin style, and which ports are worth leaving the ship for. You get a week that is planned before you board.</p>
+        </article>
+        <article id="international">
+          <p class="kicker">International travel</p>
+          <h2>Farther from home, still a clear plan.</h2>
+          <p>Passports, pacing, and a route that matches the group. International trips stay specific to the people traveling, not a generic tour.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="steps">
+      <div class="wrap">
+        <h2>How a trip starts</h2>
+        <ol>
+          <li>
+            <span>1</span>
+            <p><strong>You write.</strong> Who is going, what kind of trip, and when you hope to leave.</p>
+          </li>
+          <li>
+            <span>2</span>
+            <p><strong>We plan it with you.</strong> Destinations, pace, and the pieces that matter to your group.</p>
+          </li>
+          <li>
+            <span>3</span>
+            <p><strong>You go.</strong> The request you send here is the start of that conversation.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="plan" id="plan">
+      <div class="wrap plan-grid">
+        <div>
+          <p class="kicker light">Plan a trip</p>
+          <h2>Send the details you already know.</h2>
+          <p>Dates can be rough. A destination can be “somewhere warm” or a park you have wanted to see. Requests from this portal go to <a href="mailto:ryanhocking@gmail.com">ryanhocking@gmail.com</a>.</p>
+        </div>
+        <form id="trip-form">
+          <label>Your name
+            <input name="name" autocomplete="name" required>
+          </label>
+          <label>Email
+            <input name="email" type="email" autocomplete="email" required>
+          </label>
+          <label>Phone <span class="optional">optional</span>
+            <input name="phone" type="tel" autocomplete="tel">
+          </label>
+          <label>Trip
+            <select name="trip" required>
+              <option value="">Choose one</option>
+              <option>Family vacation</option>
+              <option>Theme park</option>
+              <option>Cruise</option>
+              <option>International</option>
+              <option>Not sure yet</option>
+            </select>
+          </label>
+          <label>When you want to travel
+            <input name="when" placeholder="Month, season, or dates">
+          </label>
+          <label>Who is going
+            <input name="who" placeholder="Adults, children, ages">
+          </label>
+          <label>What you want this trip to be
+            <textarea name="notes" rows="4"></textarea>
+          </label>
+          <p class="hp" aria-hidden="true">
+            <label>Company
+              <input name="company" tabindex="-1" autocomplete="off">
+            </label>
+          </p>
+          <button class="button" type="submit">Email this request</button>
+          <p id="form-note" class="form-note" role="status"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Forever Memories Travel</p>
+    <p>Colorado Springs · Family vacations · Theme parks · Cruises · International travel</p>
+  </footer>
+  <script src="site.js"></script>
+</body>
+</html>

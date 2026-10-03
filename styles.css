@@ -1,0 +1,179 @@
+:root {
+  --navy: #074570;
+  --navy-deep: #042c48;
+  --red: #d93f2c;
+  --gold: #d59d3b;
+  --sky: #279fba;
+  --ink: #1c2830;
+  --paper: #f7f4ee;
+  --white: #fff;
+  --line: rgba(7, 69, 112, 0.16);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: "Nunito Sans", "Segoe UI", sans-serif;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background: var(--white);
+  font-family: var(--sans);
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+img { max-width: 100%; height: auto; }
+a { color: var(--navy); }
+h1, h2, .kicker { font-family: var(--serif); font-weight: 500; }
+h1 { font-size: clamp(2.4rem, 5vw, 4.2rem); line-height: 1.05; margin: 0 0 0.6rem; color: var(--navy-deep); }
+h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); line-height: 1.15; margin: 0 0 0.6rem; color: var(--navy-deep); }
+
+.skip {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  background: var(--navy);
+  color: white;
+  padding: 0.5rem 0.8rem;
+}
+.skip:focus { top: 1rem; }
+
+.wrap { width: min(1080px, calc(100% - 2rem)); margin: 0 auto; }
+.narrow { width: min(740px, calc(100% - 2rem)); }
+
+.site-header {
+  padding: 1.5rem 1rem 0.5rem;
+  text-align: center;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(39, 159, 186, 0.16), transparent 58%),
+    var(--white);
+}
+.eyebrow {
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--sky);
+  margin: 0.5rem 0;
+}
+.logo { width: min(440px, 88vw); margin: 0 auto; display: block; }
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem 1.1rem;
+  padding: 0.4rem 0 1.2rem;
+  border-bottom: 1px solid var(--line);
+}
+.nav a {
+  color: var(--navy);
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+.nav a:hover { color: var(--red); }
+.nav-plan {
+  color: var(--red) !important;
+}
+
+.intro { padding: 3.5rem 0 2.5rem; text-align: center; background: var(--paper); }
+.lede { font-size: 1.15rem; margin: 0 auto 1.4rem; max-width: 38rem; }
+
+.button {
+  display: inline-block;
+  background: var(--navy);
+  color: white;
+  text-decoration: none;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.8rem 1.3rem;
+  font: 700 1rem var(--sans);
+  cursor: pointer;
+}
+.button:hover { background: var(--red); }
+
+.services { padding: 3rem 0; }
+.services .wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+}
+.services article {
+  border-top: 3px solid var(--gold);
+  background: var(--white);
+  padding: 1.2rem 1.2rem 1.4rem;
+  box-shadow: 0 0 0 1px var(--line);
+}
+.kicker {
+  margin: 0;
+  color: var(--red);
+  letter-spacing: 0.04em;
+  font-size: 1.35rem;
+}
+.kicker.light { color: var(--gold); }
+
+.steps { background: var(--navy-deep); color: white; padding: 3rem 0; }
+.steps h2 { color: white; }
+.steps ol {
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem 0 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+.steps li { margin: 0; }
+.steps span {
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-family: var(--serif);
+  margin-bottom: 0.6rem;
+}
+.steps strong { color: white; }
+
+.plan { padding: 3rem 0 4rem; background: linear-gradient(180deg, #e7f5f8, var(--white) 28%); }
+.plan-grid {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 2rem;
+  align-items: start;
+}
+form {
+  display: grid;
+  gap: 0.75rem;
+  background: white;
+  padding: 1.2rem;
+  box-shadow: 0 0 0 1px var(--line);
+}
+label { display: grid; gap: 0.25rem; font-weight: 700; font-size: 0.92rem; color: var(--navy); }
+input, select, textarea {
+  font: 400 1rem var(--sans);
+  color: var(--ink);
+  border: 1px solid rgba(7, 69, 112, 0.28);
+  border-radius: 0.4rem;
+  padding: 0.65rem 0.7rem;
+  background: white;
+}
+textarea { resize: vertical; }
+.optional { font-weight: 400; color: #5c6b74; }
+.hp { position: absolute; left: -9999px; }
+.form-note { min-height: 1.2rem; margin: 0; font-weight: 400; color: var(--navy-deep); }
+
+.site-footer {
+  background: var(--navy);
+  color: white;
+  text-align: center;
+  padding: 1.6rem 1rem 2rem;
+}
+.site-footer p { margin: 0.2rem 0; }
+.site-footer p:first-child { font-family: var(--serif); font-size: 1.5rem; }
+
+@media (max-width: 800px) {
+  .services .wrap, .steps ol, .plan-grid { grid-template-columns: 1fr; }
+  .intro { padding-top: 2rem; }
+}

@@ -12,9 +12,9 @@ The Colorado trade name is Forever Memories Travel. The registrant on that filin
 
 ## Where it is served
 
-Temporary access is a hostname under `rshocking.com`. The apex `https://rshocking.com/` already hosts other content and stays as it is. On 2026-10-03 that apex returned the page titled "CO 2026 GOP Governor Primary — Live Results" through Cloudflare. `www.rshocking.com`, `belkin.rshocking.com`, and `ssh.rshocking.com` also resolved. Do not replace those names.
+Temporary access is `https://forevermemoriestravel.rshocking.com` (the same name as `ForeverMemoriesTravel.rshocking.com`). The apex `https://rshocking.com/` already hosts other content and stays as it is. On 2026-10-03 that apex returned the page titled "CO 2026 GOP Governor Primary — Live Results" through Cloudflare. Do not replace the apex, `www`, `belkin`, `belkinryan`, `ebay`, `mumble`, `spiritualgifts`, `ssh`, or `jefferypi-ssh`.
 
-On that same date, `fmt.rshocking.com`, `travel.rshocking.com`, `forever.rshocking.com`, and `memories.rshocking.com` had no A or CNAME records. The temporary portal hostname is not chosen yet. No DNS record has been created for this project.
+The logo on the site is the JPEG Jennifer Ramirez sent on 2026-10-03 from jenniferr@dreamstravelconsulting.com, subject "Thank you", body "The idea". Madison's "FMT Logo" message the same day has a larger PNG. That PNG was not copied into the repo because the mail download exceeded the tool size limit.
 
 Production domain, after the cutover is explicitly approved: `forevermemoriestravel.com`.
 
@@ -23,8 +23,8 @@ Do not change nameservers or records for `forevermemoriestravel.com` until that 
 ## This repository
 
 - Visibility: private. Client contact records do not belong in git.
-- No application stack is selected in this first commit.
-- No deploy and no DNS change are included.
+- The first pages are static HTML. Trip requests open an email to ryanhocking@gmail.com. The admin sign-in and contact database are not built yet.
+- DNS for this hostname is a CNAME to GitHub Pages. It does not point at the apex origin.
 
 ## Never commit
 
