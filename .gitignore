@@ -1,0 +1,25 @@
+# Secrets and local credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+id_rsa
+id_ed25519
+credentials.json
+rclone.conf
+*.p12
+*.pfx
+
+# OS and editors
+.DS_Store
+
+# Common build and dependency output
+node_modules/
+.venv/
+venv/
+__pycache__/
+dist/
+.next/
+.turbo/
+coverage/
