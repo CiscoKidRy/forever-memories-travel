@@ -1,6 +1,6 @@
 const form = document.querySelector("#trip-form");
 const note = document.querySelector("#form-note");
-const inbox = "ryanhocking@gmail.com";
+const inbox = "jenniferr@dreamstravelconsulting.com";
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -21,6 +21,6 @@ form.addEventListener("submit", (event) => {
     String(data.get("notes") || ""),
   ];
   const href = `mailto:${inbox}?subject=${encodeURIComponent("Trip request — Forever Memories Travel")}&body=${encodeURIComponent(lines.join("\n"))}`;
-  note.textContent = `If your email app does not open, send this request to ${inbox}.`;
+  note.textContent = `If your email app does not open, send this request to Jennifer Ramirez at ${inbox}.`;
   window.location.href = href;
 });

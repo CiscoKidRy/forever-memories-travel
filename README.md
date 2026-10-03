@@ -23,7 +23,7 @@ Do not change nameservers or records for `forevermemoriestravel.com` until that 
 ## This repository
 
 - Visibility: public, because GitHub's free plan will not serve Pages from a private repository. Do not commit client contact records, passwords, or admin credentials. When the contact database is built, that data stays out of this repository.
-- The first pages are static HTML. Trip requests open an email to ryanhocking@gmail.com. The admin sign-in and contact database are not built yet.
+- The first pages are static HTML. Trip requests open an email to Jennifer Ramirez at jenniferr@dreamstravelconsulting.com. The admin sign-in and contact database are not built yet.
 - DNS for this hostname is a CNAME to GitHub Pages. It does not point at the apex origin.
 
 ## Never commit
