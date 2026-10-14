@@ -14,6 +14,41 @@ Do not commit directly to `main`.
 
 This applies to every change, including documentation, site files, and generated content. It applies to people and to AI tools. The same instructions are in [AGENTS.md](AGENTS.md). GitHub starts a new pull request from [.github/pull_request_template.md](.github/pull_request_template.md). Fill that in.
 
+A change to the inquiry database has one more requirement. Update [Documentation/DATA-DICTIONARY.md](Documentation/DATA-DICTIONARY.md) in the same pull request. The database location and the Cloudflare Tunnel in front of it are described below.
+
+## Inquiry database
+
+Trip requests are stored in PostgreSQL on the home Linux laptop `hp-linux-plex-server`. The database name is `forever_memories`. PostgreSQL 16 listens only on `127.0.0.1:5432`. The inquiry API listens only on `127.0.0.1:8787`. Neither port is open to the home network or the internet. GitHub Pages cannot connect to the laptop.
+
+The data dictionary is [Documentation/DATA-DICTIONARY.md](Documentation/DATA-DICTIONARY.md). It lists the table, every column, the constraints, the indexes, the functions, and the roles. Any change to the database requires that file to be updated in the same pull request. Changing [api/schema.sql](api/schema.sql) without updating the dictionary is incomplete. Inquiry rows stay on the laptop. Do not commit them.
+
+The running API is the `forever-memories-inquiries` service, under the `fmtinq` user, with its code in `/opt/forever-memories-inquiries`. Secrets stay in `/etc/forever-memories-inquiries.env` on the laptop. The sample variable names are in [api/.env.example](api/.env.example). Publishing this repository does not apply a schema change. Apply [api/schema.sql](api/schema.sql) on the laptop as the Postgres superuser.
+
+### Cloudflare Tunnel
+
+Public browsers reach the API through a Cloudflare Tunnel. There is no router port forward.
+
+| Item | Value |
+| --- | --- |
+| Public API | `https://inquiries.forevermemoriestravel.com` |
+| Form endpoint | `POST https://inquiries.forevermemoriestravel.com/inquiries` |
+| Health check | `GET https://inquiries.forevermemoriestravel.com/health` |
+| Zone | `forevermemoriestravel.com`, Cloudflare zone `d8abd6e253f3f4f48ae4a3f38daa2b70` |
+| DNS record | Proxied CNAME `inquiries.forevermemoriestravel.com` to `d0dd55a4-e1fa-49b1-a9ba-75e6e133dc1d.cfargotunnel.com` |
+| Tunnel name | `forever-memories-inquiries` |
+| Tunnel ID | `d0dd55a4-e1fa-49b1-a9ba-75e6e133dc1d` |
+| Connector | `cloudflared` on `hp-linux-plex-server`, systemd unit `cloudflared` |
+| Config file | `/etc/cloudflared/config.yml` |
+| Ingress | `inquiries.forevermemoriestravel.com` goes to `http://127.0.0.1:8787` |
+| Other names | HTTP 404 |
+| Credential file | `/etc/cloudflared/d0dd55a4-e1fa-49b1-a9ba-75e6e133dc1d.json`, mode `600`, owner `root` |
+
+The credential file is not in this repository. Do not commit it.
+
+The apex `forevermemoriestravel.com` and `www` stay DNS-only and point at GitHub Pages. The MX and SPF records stay on DirectNIC. Do not point the apex, `www`, or mail records at this tunnel. Do not reuse the other Cloudflare tunnels that terminate SSH for other machines.
+
+The send button turns grey and stays disabled while the request is in flight. `thanks.html` opens only after the API accepts the row. If the laptop or the tunnel is down, the form stays on the page and does not say the request was saved. Nothing is sent to dreamstravelconsulting.com.
+
 ## Product
 
 - Public website for a travel agency: descriptions, images, stories, and listings.
@@ -34,8 +69,8 @@ Cutover to `forevermemoriestravel.com` was approved on 2026-10-13. The nameserve
 
 Changes follow [How to change this repository](#how-to-change-this-repository) and [AGENTS.md](AGENTS.md). Every pull request needs a written description of what changed.
 
-- Visibility: public, because GitHub's free plan will not serve Pages from a private repository. Do not commit client contact records, passwords, or admin credentials. When the contact database is built, that data stays out of this repository.
-- The first pages are static HTML. The trip form posts to the inquiry API, which stores the request in Postgres and emails the visitor and ryanhocking@gmail.com. A successful save opens `thanks.html`. The button stays grey until that page opens. Nothing is sent to dreamstravelconsulting.com. The admin sign-in and contact database browser are not built yet.
+- Visibility: public, because GitHub's free plan will not serve Pages from a private repository. Do not commit client contact records, passwords, or admin credentials. Inquiry rows, the Gmail app password, and the tunnel credential stay on the laptop. The schema and the data dictionary are in this repository.
+- The public pages are static HTML. The trip form posts to the inquiry API documented above. A successful save opens `thanks.html`. The admin sign-in and inquiry browser are not built yet.
 - DNS for `forevermemoriestravel.com` points at GitHub Pages. It does not point at the rshocking.com origin. `forevermemoriestravel.rshocking.com` was the earlier hostname.
 
 ## Never commit

@@ -1,6 +1,9 @@
 -- Forever Memories Travel trip requests.
 -- The API connects as fmtinq and may only execute the functions.
 -- ryanhocking may select. Passwords are not stored in this file.
+-- The running database is described in Documentation/DATA-DICTIONARY.md.
+-- Any change to this schema requires that data dictionary to be updated
+-- in the same pull request.
 
 create extension if not exists pgcrypto;
 
