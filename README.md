@@ -31,6 +31,12 @@ Handle tagging this way on this site and on any new public site created for this
 7. Leave the default `purchase` key event in place. Google will not delete it. Do not send a `purchase` event.
 8. Do not put the tag on `inquiries.forevermemoriestravel.com`. That hostname is the API.
 
+## Search
+
+The home page is written so a person can tell this is a Colorado Springs travel agency that plans a cruise, a Disney vacation, or an Orlando trip. The words stay inside normal sentences. The record of what was rejected, which social profiles are not this agency, how `robots.txt` and the sitemap work, and what the 14 October 2026 SEOptimer audit changed or left alone is [Documentation/SEO.md](Documentation/SEO.md). [llms.txt](llms.txt) repeats the public facts and says the site lists no street address, phone number, or social profile.
+
+A later edit keeps those five ideas on the home page and updates that file in the same pull request. `thanks.html` stays out of the search index. Do not add a link to another business with a similar name. Add a social link only when Ryan confirms the profile is this agency.
+
 ## Inquiry database
 
 Trip requests are stored in PostgreSQL on the home Linux laptop `hp-linux-plex-server`. The database name is `forever_memories`. PostgreSQL 16 listens only on `127.0.0.1:5432`. The inquiry API listens only on `127.0.0.1:8787`. Neither port is open to the home network or the internet. GitHub Pages cannot connect to the laptop.
