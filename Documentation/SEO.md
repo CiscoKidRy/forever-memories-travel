@@ -94,9 +94,11 @@ The home page has one schema.org graph in `index.html`. It has two nodes:
 - `WebSite` for `https://forevermemoriestravel.com/`, with the site name, the same description as the meta description, `inLanguage` `en`, and `publisher` pointing at the agency.
 - `TravelAgency` for Forever Memories Travel. `TravelAgency` is already an Organization. Do not add a second Organization or a Person block. The logo is an `ImageObject` for `https://forevermemoriestravel.com/assets/logo.jpg` at 1254 by 1254. The address has only `addressLocality` set to `Colorado Springs`.
 
+The home page and the four guides include a static line, outside any `data-field`: "Forever Memories Travel is in Colorado Springs and plans the trip with the people who write." On the guides, the name links to the home page. That line is the visible location statement. `areaServed` is omitted. The pages state where the agency is. They do not state a service area, and `areaServed` means the area served, not the office location. Do not add `areaServed`. The trip form at `https://forevermemoriestravel.com/#plan` stays in the HTML. It is not a `contactPoint`.
+
 The description on both nodes is the same sentence as the meta description. `thanks.html` and the four guides have no structured data. `thanks.html` is a confirmation page. The guides stay indexable without a second agency block.
 
-Do not add `streetAddress`, `postalCode`, `addressRegion`, `addressCountry`, `telephone`, `email`, `contactPoint`, `openingHours`, `geo`, `aggregateRating`, `review`, `priceRange`, a search action, or an offer. The page does not show those facts. This block will not produce a local-business rich result, and that is expected. `sameAs` may contain only `https://www.tiktok.com/@forevermemoriestravel`. Do not add `https://www.instagram.com/forevermemoriestravel/`. Ryan named that profile and then said not to use it.
+Do not add `streetAddress`, `postalCode`, `addressRegion`, `addressCountry`, `areaServed`, `telephone`, `email`, `contactPoint`, `openingHours`, `geo`, `aggregateRating`, `review`, `priceRange`, a search action, or an offer. The page does not show those facts. This block will not produce a local-business rich result, and that is expected. `sameAs` may contain only `https://www.tiktok.com/@forevermemoriestravel`. Do not add `https://www.instagram.com/forevermemoriestravel/`. Ryan named that profile and then said not to use it.
 
 ## Social profiles and backlinks
 

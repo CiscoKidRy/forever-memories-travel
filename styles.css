@@ -131,6 +131,8 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); line-height: 1.15; margin: 0 0 0.6re
 
 .intro { padding: 3.5rem 0 2.5rem; text-align: center; background: var(--paper); }
 .lede { font-size: 1.15rem; margin: 0 auto 1.4rem; max-width: 38rem; }
+.lede:has(+ .place-line) { margin-bottom: 0.7rem; }
+.place-line { max-width: 38rem; margin: 0 auto 1.4rem; }
 
 .button {
   display: inline-block;

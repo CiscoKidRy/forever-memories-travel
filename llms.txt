@@ -4,6 +4,8 @@
 
 Forever Memories Travel is a Colorado Springs travel agency. The public site is the home page at https://forevermemoriestravel.com/ plus four guides. The agency plans family travel, a Disney or Orlando park day, a cruise, and international trips. A visitor sends a trip request on the home page.
 
+Forever Memories Travel is in Colorado Springs and plans the trip with the people who write.
+
 ## Pages
 
 - [Home](https://forevermemoriestravel.com/): the four short introductions and the trip request form.
