@@ -39,6 +39,44 @@ function unlockButton(message) {
   submitButton.focus();
 }
 
+const tripTypes = {
+  "Family vacation": "family",
+  "Theme park": "park",
+  "Cruise": "cruise",
+  "International": "international",
+};
+
+function leadParams() {
+  const params = { lead_source: "trip_form" };
+  const tripType = tripTypes[form.trip.value];
+  if (tripType) {
+    params.trip_type = tripType;
+  }
+  return params;
+}
+
+function recordLeadThen(go) {
+  let moved = false;
+  const once = () => {
+    if (moved) {
+      return;
+    }
+    moved = true;
+    go();
+  };
+  if (typeof gtag === "function") {
+    gtag("event", "generate_lead", {
+      ...leadParams(),
+      transport_type: "beacon",
+      event_callback: once,
+      event_timeout: 800,
+    });
+    window.setTimeout(once, 1000);
+    return;
+  }
+  once();
+}
+
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (locked) {
@@ -77,7 +115,8 @@ form.addEventListener("submit", async (event) => {
     const result = await response.json().catch(() => ({}));
     if (response.status === 201 && result.id) {
       const mail = result.visitor_email === "sent" ? "sent" : "failed";
-      window.location.assign(`thanks.html?ref=${encodeURIComponent(result.id)}&mail=${mail}`);
+      const next = `thanks.html?ref=${encodeURIComponent(result.id)}&mail=${mail}`;
+      recordLeadThen(() => window.location.assign(next));
       return;
     }
     if (response.status === 409) {
