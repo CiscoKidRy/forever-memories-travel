@@ -4,7 +4,7 @@ This process runs on the home Linux laptop and listens on `127.0.0.1:8787`. Clou
 
 The service account is `fmtinq`. It may execute `submit_inquiry` and `mark_inquiry_email`. It cannot select, update, or delete rows. The OS user `ryanhocking` can select rows through peer authentication.
 
-The visitor confirmation and the lead notice are HTML messages with plain-text alternatives. Both use the site logo, navy, gold, sky, and paper colors.
+The visitor confirmation and the lead notice are HTML messages with plain-text alternatives. Both use the site logo, navy, gold, sky, and paper colors. Those messages still leave through Gmail SMTP. Cloudflare Email Sending is onboarded for `donotreply@forevermemoriestravel.com`. The record is [Documentation/EMAIL-SENDING.md](../Documentation/EMAIL-SENDING.md). This API does not call it yet.
 
 The database is `forever_memories` on `hp-linux-plex-server`. PostgreSQL listens on `127.0.0.1:5432` only. The column-by-column description is [Documentation/DATA-DICTIONARY.md](../Documentation/DATA-DICTIONARY.md). Any change to the database requires that data dictionary to be updated in the same pull request.
 

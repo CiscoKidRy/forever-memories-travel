@@ -16,6 +16,10 @@ The inquiry database is described in [Documentation/DATA-DICTIONARY.md](Document
 
 The database is PostgreSQL database `forever_memories` on `hp-linux-plex-server`, listening on `127.0.0.1:5432` only. Public browsers reach the API through the Cloudflare Tunnel `forever-memories-inquiries` at `https://inquiries.forevermemoriestravel.com`. The setup is on the repository front page, [README.md](README.md).
 
+## Email sending
+
+Trip confirmations still leave through Gmail SMTP from the inquiry API. Cloudflare Email Sending is onboarded so a later change can send as `donotreply@forevermemoriestravel.com`. The record is [Documentation/EMAIL-SENDING.md](Documentation/EMAIL-SENDING.md). Do not enable Email Routing. Do not change the apex MX or the apex SPF TXT records. Do not onboard the domain again.
+
 ## Google tag
 
 Public pages on `forevermemoriestravel.com`, and any new public site on that domain, use one Google tag with measurement ID `G-GYBCCKG2FJ`. The rules are on the repository front page, [README.md](README.md#google-tag). The property record is [Documentation/GOOGLE-TAG.md](Documentation/GOOGLE-TAG.md).
