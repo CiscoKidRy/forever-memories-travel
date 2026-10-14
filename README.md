@@ -16,6 +16,21 @@ This applies to every change, including documentation, site files, and generated
 
 A change to the inquiry database has one more requirement. Update [Documentation/DATA-DICTIONARY.md](Documentation/DATA-DICTIONARY.md) in the same pull request. The database location and the Cloudflare Tunnel in front of it are described below.
 
+## Google tag
+
+Public HTML pages on `forevermemoriestravel.com` use one Google tag. The measurement ID is `G-GYBCCKG2FJ`. The property, the stream, the key events, and the lead parameters are recorded in [Documentation/GOOGLE-TAG.md](Documentation/GOOGLE-TAG.md). A change to tagging updates that file in the same pull request.
+
+Handle tagging this way on this site and on any new public site created for this domain:
+
+1. Put the Google tag snippet first inside `<head>`. Use one snippet per page. The snippet is in [Documentation/GOOGLE-TAG.md](Documentation/GOOGLE-TAG.md).
+2. Use measurement ID `G-GYBCCKG2FJ` for every public page and every new hostname on `forevermemoriestravel.com`. `www` already serves these same files. Do not create a second Analytics property, a second web stream, or a second measurement ID for this domain.
+3. Do not add a Google Tag Manager container. A container id starts with `GTM-`. The `googletagmanager.com` address in the snippet is the loader for this Google tag.
+4. Do not send a name, email address, phone number, note, or record id to Google. A confirmation address that contains an id uses `page_location: location.origin + location.pathname`, as [thanks.html](thanks.html) does.
+5. Send `generate_lead` only after the server has stored the request. This site does that in [site.js](site.js) after the inquiry API returns HTTP 201 with an id. The parameters are `lead_source` `trip_form` and, for a chosen trip kind, `trip_type` of `family`, `park`, `cruise`, or `international`. A new form adds its `lead_source` value to the documentation in the same pull request.
+6. Keep the footer privacy notice. It states the Analytics collection and who receives the trip request. If the form changes, change that sentence in the same pull request.
+7. Leave the default `purchase` key event in place. Google will not delete it. Do not send a `purchase` event.
+8. Do not put the tag on `inquiries.forevermemoriestravel.com`. That hostname is the API.
+
 ## Inquiry database
 
 Trip requests are stored in PostgreSQL on the home Linux laptop `hp-linux-plex-server`. The database name is `forever_memories`. PostgreSQL 16 listens only on `127.0.0.1:5432`. The inquiry API listens only on `127.0.0.1:8787`. Neither port is open to the home network or the internet. GitHub Pages cannot connect to the laptop.
