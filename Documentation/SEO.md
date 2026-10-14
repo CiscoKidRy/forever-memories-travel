@@ -56,7 +56,7 @@ The home page canonical address is `https://forevermemoriestravel.com/`. The Ope
 
 The home page also has Twitter card tags: `twitter:card` is `summary`, and the title, description, image, and image alt match the title, description, and logo. There is no `twitter:site` handle. Do not invent one. `thanks.html` does not need those tags.
 
-[llms.txt](../llms.txt) repeats facts already on the home page. It names the home page and says `thanks.html` is a confirmation page marked `noindex`. It says the site does not publish a street address, a business phone number, or a social profile. Do not add a fact there that the home page does not show. Do not put `llms.txt` in the sitemap.
+[llms.txt](../llms.txt) repeats facts already on the home page. It names the home page and says `thanks.html` is a confirmation page marked `noindex`. It says the site does not publish a street address or a business phone number, and it names the TikTok profile. Do not add a fact there that the home page does not show. Do not put `llms.txt` in the sitemap.
 
 The logo file is 1254 by 1254 pixels. Both logo images set `width="1254"` and `height="1254"`. The stylesheet still sizes the logo for the page.
 
@@ -71,7 +71,7 @@ The home page has one schema.org graph in `index.html`. It has two nodes:
 
 The description on both nodes is the same sentence as the meta description. `thanks.html` has no structured data. It is a confirmation page.
 
-Do not add `streetAddress`, `postalCode`, `addressRegion`, `addressCountry`, `telephone`, `email`, `contactPoint`, `openingHours`, `geo`, `aggregateRating`, `review`, `priceRange`, `sameAs`, a search action, or an offer. The page does not show those facts. This block will not produce a local-business rich result, and that is expected. Do not add `https://www.instagram.com/forevermemoriestravel/`. Ryan named that profile and then said not to use it.
+Do not add `streetAddress`, `postalCode`, `addressRegion`, `addressCountry`, `telephone`, `email`, `contactPoint`, `openingHours`, `geo`, `aggregateRating`, `review`, `priceRange`, a search action, or an offer. The page does not show those facts. This block will not produce a local-business rich result, and that is expected. `sameAs` may contain only `https://www.tiktok.com/@forevermemoriestravel`. Do not add `https://www.instagram.com/forevermemoriestravel/`. Ryan named that profile and then said not to use it.
 
 ## Social profiles and backlinks
 
@@ -85,11 +85,11 @@ These similarly named businesses are not this site. Do not link to them:
 - Making Memories Travel LLC, Florissant, Colorado
 - Other agencies whose names contain "memories" and "travel"
 
-TikTok `@forevermemoriestravel` exists. The videos found there are credited to Jennifer Ramirez and talk about Disney cruises, SeaWorld Orlando, and Universal Orlando. The trip form on this site does not send requests to Jennifer. Do not add that TikTok link unless Ryan says that account should represent this website.
+Ryan confirmed on 2026-10-14 that `https://www.tiktok.com/@forevermemoriestravel` represents this website. The footer of the home page and of `thanks.html` links to that exact URL with a TikTok icon and the visible word TikTok. The `TravelAgency` `sameAs` list contains that URL and no other. Do not remove the link unless Ryan says so. The videos on that profile are credited to Jennifer Ramirez. The trip form on this site does not send requests to Jennifer.
 
 On 2026-10-14 Ryan named `https://www.instagram.com/forevermemoriestravel/` and then said not to use that link. Do not add it.
 
-This release adds no social links. When Ryan has a profile that is actually this agency, add it in the footer with the visible name and the real URL, record the URL in this file, and add nothing else to the structured data until this file says `sameAs` is allowed. Ryan can then put `https://forevermemoriestravel.com/` on that profile. That is the backlink. Do not buy links, and do not post the site on someone else's page.
+When Ryan confirms another profile that is actually this agency, add it in the footer with the visible name and the real URL, record the URL in this file, and add that URL to `sameAs` in the same pull request. Ryan can then put `https://forevermemoriestravel.com/` on that profile. That is the backlink. Do not buy links, and do not post the site on someone else's page.
 
 ## SEOptimer audit, 14 October 2026
 
@@ -109,7 +109,7 @@ Left unchanged on purpose:
 
 - No Facebook pixel.
 - No new Facebook, X, Instagram, LinkedIn, or YouTube profile, and no link to a profile this file does not name.
-- No `sameAs`.
+- The audit, on that date, found no social profile. Ryan later confirmed TikTok. `sameAs` now lists only `https://www.tiktok.com/@forevermemoriestravel`.
 - No street address, business phone, or email address printed on the page. The phone field on the form is the visitor's number.
 - No LocalBusiness block built from an invented address.
 - No bought links. The report's referring domains are not partners. It listed quero.party, urls-shortener.eu, bye.fyi, atomizelink.icu, blogsphere.top, metamagic.top, shortenurls.eu, anchorurl.cloud, optimzeflow.top, and dailymusings.top, plus a spam anchor that mentioned RankVA.com and Telegram. Do not link to those domains, and do not treat them as backlink partners.
