@@ -11,6 +11,8 @@ import smtplib
 import traceback
 from datetime import datetime
 from email.message import EmailMessage
+from html import escape
+from string import Template
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from ipaddress import ip_address
 from zoneinfo import ZoneInfo
@@ -172,7 +174,131 @@ class MailOff(Exception):
     pass
 
 
-def send_mail(recipient, subject, body):
+SITE_URL = "https://forevermemoriestravel.com"
+LOGO_URL = "https://forevermemoriestravel.com/assets/logo.jpg"
+VISITOR_HTML = Template("""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>We have your trip request</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&family=Nunito+Sans:wght@400;700&display=swap">
+</head>
+<body style="margin:0;padding:0;background-color:#f7f4ee;">
+  <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;font-size:1px;line-height:1px;color:#f7f4ee;">Colorado Springs travel agency. We will reply to this email address.</div>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f7f4ee" style="margin:0;border-collapse:collapse;background-color:#f7f4ee;">
+    <tr>
+      <td align="center" bgcolor="#f7f4ee" style="padding:28px 12px;background-color:#f7f4ee;">
+        <!--[if mso]><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600"><tr><td><![endif]-->
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="width:600px;max-width:600px;border-collapse:collapse;background-color:#ffffff;">
+          <tr>
+            <td height="4" bgcolor="#279fba" style="height:4px;font-size:0;line-height:0;background-color:#279fba;">&nbsp;</td>
+          </tr>
+          <tr>
+            <td align="center" style="padding:28px 28px 0;font-family:'Nunito Sans','Segoe UI',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#074570;">Colorado Springs travel agency</td>
+          </tr>
+          <tr>
+            <td align="center" style="padding:16px 28px 20px;">
+              <img src="$logo" width="280" height="280" alt="Forever Memories Travel. Family vacations, theme parks, cruises, and international travel." style="display:block;width:280px;max-width:100%;height:auto;border:0;">
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:32px 36px 8px;font-family:'Cormorant Garamond',Georgia,serif;font-size:36px;line-height:1.15;font-weight:500;color:#042c48;">The request starts the conversation.</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 36px 0;font-family:'Nunito Sans','Segoe UI',sans-serif;font-size:17px;line-height:1.6;color:#1c2830;">Hello $name. Forever Memories Travel has your trip request.</td>
+          </tr>
+          <tr>
+            <td style="padding:12px 36px 8px;font-family:'Nunito Sans','Segoe UI',sans-serif;font-size:17px;line-height:1.6;color:#1c2830;">We plan family vacations, theme parks, cruises, and international travel around the people going. We shape the plan with you.</td>
+          </tr>
+          <tr>
+            <td style="padding:20px 36px 8px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f7f4ee" style="width:100%;border-collapse:collapse;background-color:#f7f4ee;">
+                <tr>
+                  <td height="3" bgcolor="#d59d3b" style="height:3px;font-size:0;line-height:0;background-color:#d59d3b;">&nbsp;</td>
+                </tr>
+                <tr>
+                  <td style="padding:16px 20px 6px;font-family:'Nunito Sans','Segoe UI',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#074570;">Name</td>
+                </tr>
+                <tr>
+                  <td style="padding:0 20px 12px;font-family:'Nunito Sans','Segoe UI',sans-serif;font-size:16px;line-height:1.5;color:#1c2830;">$name</td>
+                </tr>
+                <tr>
+                  <td style="padding:0 20px 6px;font-family:'Nunito Sans','Segoe UI',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#074570;">Reference</td>
+                </tr>
+                <tr>
+                  <td style="padding:0 20px 14px;font-family:'Nunito Sans','Segoe UI',sans-serif;font-size:16px;line-height:1.5;color:#1c2830;">$reference</td>
+                </tr>
+                <tr>
+                  <td style="padding:0 20px 6px;font-family:'Nunito Sans','Segoe UI',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#074570;">Received</td>
+                </tr>
+                <tr>
+                  <td style="padding:0 20px 14px;font-family:'Nunito Sans','Segoe UI',sans-serif;font-size:16px;line-height:1.5;color:#1c2830;">$received</td>
+                </tr>
+                <tr>
+                  <td style="padding:0 20px 6px;font-family:'Nunito Sans','Segoe UI',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#074570;">Trip</td>
+                </tr>
+                <tr>
+                  <td style="padding:0 20px 18px;font-family:'Nunito Sans','Segoe UI',sans-serif;font-size:16px;line-height:1.5;color:#1c2830;">$trip</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:16px 36px 8px;font-family:'Nunito Sans','Segoe UI',sans-serif;font-size:17px;line-height:1.6;color:#1c2830;">Forever Memories Travel will reply to this email address. The reply goes to the address you entered.</td>
+          </tr>
+          <tr>
+            <td align="left" style="padding:18px 36px 32px;">
+              <a href="$site" style="display:inline-block;background-color:#074570;color:#ffffff;font-family:'Nunito Sans','Segoe UI',sans-serif;font-size:16px;font-weight:700;line-height:1;text-decoration:none;padding:14px 22px;">Back to the site</a>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" bgcolor="#074570" style="padding:26px 28px 32px;background-color:#074570;font-family:'Nunito Sans','Segoe UI',sans-serif;color:#ffffff;">
+              <p style="margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:24px;line-height:1.2;color:#ffffff;">Forever Memories Travel</p>
+              <p style="margin:8px 0 0;font-family:'Nunito Sans','Segoe UI',sans-serif;font-size:15px;line-height:1.5;color:#ffffff;">Colorado Springs · Family vacations · Theme parks · Cruises · International travel</p>
+              <p style="margin:12px 0 0;font-family:'Nunito Sans','Segoe UI',sans-serif;font-size:15px;line-height:1.5;"><a href="$site" style="color:#ffffff;text-decoration:underline;">forevermemoriestravel.com</a></p>
+            </td>
+          </tr>
+        </table>
+        <!--[if mso]></td></tr></table><![endif]-->
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+""")
+
+
+def visitor_plain(fields, stored, when):
+    return "\n".join([
+        "The request starts the conversation.",
+        "",
+        f"Hello {fields['name']}. Forever Memories Travel has your trip request.",
+        "",
+        "We plan family vacations, theme parks, cruises, and international travel around the people going. We shape the plan with you.",
+        "",
+        f"Reference: {stored['id']}",
+        f"Received: {when}",
+        f"Trip: {fields['trip']}",
+        "",
+        "Forever Memories Travel will reply to this email address. The reply goes to the address you entered.",
+        "",
+        SITE_URL,
+    ])
+
+
+def visitor_html(fields, stored, when):
+    return VISITOR_HTML.substitute(
+        logo=LOGO_URL,
+        site=SITE_URL,
+        name=escape(fields["name"]),
+        reference=escape(str(stored["id"])),
+        received=escape(when),
+        trip=escape(fields["trip"]),
+    )
+
+
+def send_mail(recipient, subject, body, html_body=None):
     if os.environ.get("MAIL_DISABLED", "").strip() == "1":
         raise MailOff()
     sender = os.environ.get("GMAIL_ADDRESS", "").strip()
@@ -184,6 +310,8 @@ def send_mail(recipient, subject, body):
     message["To"] = recipient
     message["Subject"] = subject
     message.set_content(body)
+    if html_body:
+        message.add_alternative(html_body, subtype="html")
     with smtplib.SMTP("smtp.gmail.com", 587, timeout=20) as smtp:
         smtp.starttls()
         smtp.login(sender, password)
@@ -200,16 +328,8 @@ def deliver(fields, stored):
         send_mail(
             fields["email"],
             "We have your trip request",
-            "\n".join([
-                f"Hello {fields['name']},",
-                "",
-                "Forever Memories Travel has your trip request.",
-                f"Reference: {stored['id']}",
-                f"Received: {when}",
-                f"Trip: {fields['trip']}",
-                "",
-                "We will reply to this email address.",
-            ]),
+            visitor_plain(fields, stored, when),
+            visitor_html(fields, stored, when),
         )
         visitor_status = "sent"
     except MailOff:
