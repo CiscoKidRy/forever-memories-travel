@@ -2,6 +2,7 @@ const form = document.querySelector("#trip-form");
 const note = document.querySelector("#form-note");
 const submitButton = form.querySelector("button[type=submit]");
 const inbox = "jenniferr@dreamstravelconsulting.com";
+const copyTo = "ryanhocking@gmail.com";
 const endpoint = `https://formsubmit.co/ajax/${inbox}`;
 
 form.addEventListener("submit", async (event) => {
@@ -34,6 +35,7 @@ form.addEventListener("submit", async (event) => {
         _subject: "Trip request — Forever Memories Travel",
         _template: "table",
         _captcha: "false",
+        _cc: copyTo,
         _url: "https://forevermemoriestravel.com/",
       }),
     });

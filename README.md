@@ -21,7 +21,7 @@ Cutover to `forevermemoriestravel.com` was approved on 2026-10-13. The nameserve
 ## This repository
 
 - Visibility: public, because GitHub's free plan will not serve Pages from a private repository. Do not commit client contact records, passwords, or admin credentials. When the contact database is built, that data stays out of this repository.
-- The first pages are static HTML. The trip form sends the request to Jennifer Ramirez at jenniferr@dreamstravelconsulting.com through FormSubmit. She must confirm that address once before delivery starts. The admin sign-in and contact database are not built yet.
+- The first pages are static HTML. The trip form sends the request to Jennifer Ramirez at jenniferr@dreamstravelconsulting.com through FormSubmit, and FormSubmit copies ryanhocking@gmail.com. She must confirm that address once before delivery starts. The first time the copy address is used, FormSubmit may ask ryanhocking@gmail.com to confirm before those copies arrive. The admin sign-in and contact database are not built yet.
 - DNS for `forevermemoriestravel.com` points at GitHub Pages. It does not point at the rshocking.com origin. `forevermemoriestravel.rshocking.com` was the earlier hostname.
 
 ## Never commit
