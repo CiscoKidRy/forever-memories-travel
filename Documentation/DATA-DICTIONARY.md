@@ -19,7 +19,7 @@ A database change is any of these:
 
 Update [api/schema.sql](../api/schema.sql) in that same pull request. Apply the script on the laptop as the `postgres` superuser. GitHub Pages does not apply database changes. Merging this repository does not change the laptop database.
 
-Do not commit inquiry rows, passwords, tunnel credentials, or the Gmail app password.
+Do not commit inquiry rows, passwords, tunnel credentials, or the Cloudflare Email Sending token.
 
 ## Where the database is
 
@@ -120,7 +120,7 @@ The function then does this:
 
 The function returns `inquiry_id`, `inquiry_submitted_at`, `created`, `out_visitor_email`, and `out_ryan_email`. Those names are the function result. They are not columns.
 
-The API sends the visitor email and the notice to `ryanhocking@gmail.com` only when `created` is true. A replay does not send a second pair. The row is kept when email fails.
+The API sends the visitor email and the notice to `ryanhocking@gmail.com` only when `created` is true. A replay does not send a second pair. The row is kept when email fails. Both messages are sent by Cloudflare Email Sending as Forever Memories Travel `<donotreply@forevermemoriestravel.com>`, with `reply_to` set to `ryanhocking@gmail.com`. `MAIL_DISABLED=1` turns sending off. The visitor subject is `We have your trip request`. The notice subject is `Trip request — Forever Memories Travel`.
 
 ## Email status
 
