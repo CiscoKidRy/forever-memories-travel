@@ -35,7 +35,7 @@ Cutover to `forevermemoriestravel.com` was approved on 2026-10-13. The nameserve
 Changes follow [How to change this repository](#how-to-change-this-repository) and [AGENTS.md](AGENTS.md). Every pull request needs a written description of what changed.
 
 - Visibility: public, because GitHub's free plan will not serve Pages from a private repository. Do not commit client contact records, passwords, or admin credentials. When the contact database is built, that data stays out of this repository.
-- The first pages are static HTML. The trip form sends the request to ryanhocking@gmail.com through FormSubmit. That address must be confirmed once before delivery starts. The admin sign-in and contact database are not built yet.
+- The first pages are static HTML. The trip form posts to the inquiry API, which stores the request in Postgres and emails the visitor and ryanhocking@gmail.com. A successful save opens `thanks.html`. The button stays grey until that page opens. Nothing is sent to dreamstravelconsulting.com. The admin sign-in and contact database browser are not built yet.
 - DNS for `forevermemoriestravel.com` points at GitHub Pages. It does not point at the rshocking.com origin. `forevermemoriestravel.rshocking.com` was the earlier hostname.
 
 ## Never commit
