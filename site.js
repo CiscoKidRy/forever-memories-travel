@@ -34,7 +34,7 @@ form.addEventListener("submit", async (event) => {
         _subject: "Trip request — Forever Memories Travel",
         _template: "table",
         _captcha: "false",
-        _url: "https://forevermemoriestravel.rshocking.com/",
+        _url: "https://forevermemoriestravel.com/",
       }),
     });
     const result = await response.json().catch(() => ({}));
