@@ -1,0 +1,144 @@
+# Data dictionary
+
+This file describes the Forever Memories Travel inquiry database. It was compared with the running database and with [api/schema.sql](../api/schema.sql) on 2026-10-14.
+
+[api/schema.sql](../api/schema.sql) is the script that creates this database. This file is the description of what that database means. They must agree. The rows themselves are not in this repository.
+
+## Database changes
+
+Any change to the database requires an update to this data dictionary in the same pull request. The pull request is incomplete without that update.
+
+A database change is any of these:
+
+- A new, dropped, or renamed table, column, function, trigger, or role
+- A change to a type, nullability, default, check, unique key, or primary key
+- A new, dropped, or changed index
+- A change to a function or trigger that changes what is stored, when a row is created, or who can read or write it
+- A change to a role or a grant
+- A new allowed value for a stored field, including a new trip label
+
+Update [api/schema.sql](../api/schema.sql) in that same pull request. Apply the script on the laptop as the `postgres` superuser. GitHub Pages does not apply database changes. Merging this repository does not change the laptop database.
+
+Do not commit inquiry rows, passwords, tunnel credentials, or the Gmail app password.
+
+## Where the database is
+
+| Item | Value |
+| --- | --- |
+| Machine | `hp-linux-plex-server`, the home Linux laptop |
+| Operating system time zone | `America/Denver` |
+| Engine | PostgreSQL 16.15, package `16.15-0ubuntu0.24.04.1` |
+| Database name | `forever_memories` |
+| Schema | `public` |
+| Listen address | `127.0.0.1` port `5432` only |
+| Service | `postgresql` |
+| API listen address | `127.0.0.1` port `8787` only |
+| API service | `forever-memories-inquiries` |
+| API user | `fmtinq` |
+| API code on the laptop | `/opt/forever-memories-inquiries` |
+| API environment file | `/etc/forever-memories-inquiries.env`, mode `640`, owner `root:fmtinq` |
+
+Postgres is not open to the home network or the internet. The API is not open to them either. A connection from another computer to port 5432 on this laptop is refused. The public path is the Cloudflare Tunnel described in the repository [README](../README.md#cloudflare-tunnel).
+
+The API connects through the local Postgres socket. The connection string is in [api/.env.example](../api/.env.example):
+
+```text
+dbname=forever_memories user=fmtinq host=/var/run/postgresql
+```
+
+There is no database password in the repository. `fmtinq` is a peer-authenticated login for the operating-system user `fmtinq`.
+
+## What is stored
+
+One table, `public.inquiries`, holds every accepted trip request. The honeypot field `company` is not a column. A non-empty honeypot is rejected and nothing is written.
+
+The server sets `submitted_at`. The form cannot choose it. A `BEFORE INSERT` trigger, `inquiries_stamp_submitted_at`, sets `submitted_at` to `clock_timestamp()` on every insert. The column default is the same function, and the trigger replaces that value as well.
+
+| Column | Type | Null | Default | Form JSON field | Meaning |
+| --- | --- | --- | --- | --- | --- |
+| `id` | `uuid` | no | `gen_random_uuid()` | returned as `id` | Primary key. The confirmation page shows this as the reference. |
+| `submitted_at` | `timestamptz` | no | `clock_timestamp()` | none | Server receipt time. The trigger overwrites it on insert. Stored as an absolute time. The laptop zone is `America/Denver`. |
+| `idempotency_key` | `uuid` | no | | `idempotency_key` | Identifies one browser attempt. Unique. |
+| `payload_fingerprint` | `text` | no | | computed | 64-character lowercase hex SHA-256 of the normalized request. |
+| `source_url` | `text` | no | | `source_url` | Site page that sent the request. Origin and path only. |
+| `name` | `text` | no | | `name` | Visitor name, trimmed. |
+| `email` | `text` | no | | `email` | Visitor email, trimmed and lowercased. |
+| `phone` | `text` | yes | | `phone` | Phone. Empty input is stored as null. |
+| `trip` | `text` | no | | `trip` | One of the five trip labels below. |
+| `travel_when` | `text` | yes | | `when` | When the visitor wants to travel. Free text, not a date. Empty input is stored as null. |
+| `party` | `text` | yes | | `who` | Who is going. Empty input is stored as null. |
+| `notes` | `text` | yes | | `notes` | Free notes. Empty input is stored as null. |
+| `client_ip` | `inet` | no | | none | Client address from `CF-Connecting-IP` when that header is present, otherwise the socket peer. |
+| `visitor_email_status` | `text` | no | `pending` | none | Delivery state of the visitor's confirmation email. |
+| `ryan_email_status` | `text` | no | `pending` | none | Delivery state of the notice to `ryanhocking@gmail.com`. |
+
+`client_ip` is trusted from `CF-Connecting-IP` because the API port is localhost and `cloudflared` is the process that sets the header.
+
+## Constraints
+
+| Name | Rule |
+| --- | --- |
+| `inquiries_pkey` | `id` is the primary key. |
+| `inquiries_idempotency_key_key` | `idempotency_key` is unique. |
+| `inquiries_fingerprint_hex` | `payload_fingerprint` matches `^[0-9a-f]{64}$`. |
+| `inquiries_name` | Trimmed, length 1 to 200. |
+| `inquiries_email` | Lowercased and trimmed, length 3 to 254, and matches one `@` with a dot in the domain. |
+| `inquiries_phone` | Null, or trimmed with length 1 to 40. |
+| `inquiries_trip` | `Family vacation`, `Theme park`, `Cruise`, `International`, or `Not sure yet`. |
+| `inquiries_travel_when` | Null, or trimmed with length 1 to 300. |
+| `inquiries_party` | Null, or trimmed with length 1 to 400. |
+| `inquiries_notes` | Null, or trimmed with length 1 to 4000. |
+| `inquiries_source_url` | Length 1 to 500, and matches `https://forevermemoriestravel.com` or `https://www.forevermemoriestravel.com`, with an optional path. |
+| `inquiries_visitor_email_status` | `pending`, `sent`, or `failed`. |
+| `inquiries_ryan_email_status` | `pending`, `sent`, or `failed`. |
+
+## Indexes
+
+| Name | Columns |
+| --- | --- |
+| `inquiries_pkey` | `id` |
+| `inquiries_idempotency_key_key` | `idempotency_key` unique |
+| `inquiries_submitted_at_idx` | `submitted_at` descending |
+| `inquiries_fingerprint_submitted_idx` | `payload_fingerprint`, `submitted_at` descending |
+| `inquiries_client_ip_submitted_idx` | `client_ip`, `submitted_at` descending |
+
+## When a row is created
+
+`submit_inquiry` is the only insert path used by the API. It is `SECURITY DEFINER`, owned by `postgres`, with `search_path` set to `public`.
+
+The fingerprint is the hex SHA-256 of these values joined by ASCII unit separator `chr(31)`, in this order: trimmed name, lowercased email, phone or empty, trimmed trip, travel time or empty, party or empty, notes or empty, and trimmed source URL. `pgcrypto` provides `digest`. The extension installed in this database is `pgcrypto` 1.3.
+
+The function then does this:
+
+1. Rejects a null idempotency key or a null client address.
+2. If that idempotency key already exists and the fingerprint matches, it returns the existing row and `created` is false.
+3. If that idempotency key already exists and the fingerprint differs, it raises `idempotency_conflict`. The API returns HTTP 409. Nothing new is stored.
+4. If a different key has the same fingerprint and `submitted_at` is within the last 2 minutes, it returns that existing row and `created` is false.
+5. After 2 minutes, the same words are a new row.
+6. If this client address already has 5 inserted rows in the last hour, it raises `rate_limited`. The API returns HTTP 429. A replay that returns an existing row does not count toward the 5.
+7. Otherwise it inserts one row. `created` is true. Both email statuses start as `pending`.
+
+The function returns `inquiry_id`, `inquiry_submitted_at`, `created`, `out_visitor_email`, and `out_ryan_email`. Those names are the function result. They are not columns.
+
+The API sends the visitor email and the notice to `ryanhocking@gmail.com` only when `created` is true. A replay does not send a second pair. The row is kept when email fails.
+
+## Email status
+
+`mark_inquiry_email(p_id uuid, p_which text, p_status text)` updates one status column. `p_which` is `visitor` or `ryan`. `p_status` is `sent` or `failed`. It does not change a column that is already `sent`. It is `SECURITY DEFINER`, owned by `postgres`.
+
+The API calls this function after each delivery attempt. `fmtinq` has no `UPDATE` grant on the table, so this function is the only way the API records delivery.
+
+## Roles and grants
+
+| Role | Access |
+| --- | --- |
+| `postgres` | Owns the table, the trigger function, `submit_inquiry`, and `mark_inquiry_email`. Used to apply the schema and to delete test rows. |
+| `fmtinq` | `EXECUTE` on `submit_inquiry` and `mark_inquiry_email` only. No select, insert, update, or delete on `inquiries`. |
+| `ryanhocking` | `SELECT` on `inquiries` through peer authentication as the operating-system user. |
+| `public` | All privileges revoked on `inquiries`, `submit_inquiry`, `mark_inquiry_email`, and `inquiries_stamp_submitted_at`. |
+
+`fmtinq` and `ryanhocking` are login roles. The schema script creates a missing role. It does not set a password.
+
+## Trigger
+
+`inquiries_stamp_submitted_at` runs `BEFORE INSERT` on each row and calls `inquiries_stamp_submitted_at()`. The function sets `NEW.submitted_at` to `clock_timestamp()` and returns the row. There is no update or delete trigger.
