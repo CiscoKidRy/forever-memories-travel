@@ -64,6 +64,8 @@ The apex `forevermemoriestravel.com` and `www` stay DNS-only and point at GitHub
 
 The send button turns grey and stays disabled while the request is in flight. `thanks.html` opens only after the API accepts the row. If the laptop or the tunnel is down, the form stays on the page and does not say the request was saved. Nothing is sent to dreamstravelconsulting.com.
 
+Trip mail is sent by Cloudflare Email Sending. The From address is Forever Memories Travel `<donotreply@forevermemoriestravel.com>`. That address is not a mailbox. Replies are directed to `ryanhocking@gmail.com`. The visitor message uses the subject `We have your trip request`. The lead notice uses the subject `Trip request — Forever Memories Travel` and goes to `ryanhocking@gmail.com`. `MAIL_DISABLED=1` turns sending off. Workers Paid includes 3,000 counted Email Sending messages per account per month, then $0.35 per 1,000. The limits API also reports 200 per day. A message to `ryanhocking@gmail.com` does not count. A message to a visitor does.
+
 ## Product
 
 - Public website for a travel agency: descriptions, images, stories, and listings.
@@ -84,7 +86,7 @@ Cutover to `forevermemoriestravel.com` was approved on 2026-10-13. The nameserve
 
 Changes follow [How to change this repository](#how-to-change-this-repository) and [AGENTS.md](AGENTS.md). Every pull request needs a written description of what changed.
 
-- Visibility: public, because GitHub's free plan will not serve Pages from a private repository. Do not commit client contact records, passwords, or admin credentials. Inquiry rows, the Gmail app password, and the tunnel credential stay on the laptop. The schema and the data dictionary are in this repository.
+- Visibility: public, because GitHub's free plan will not serve Pages from a private repository. Do not commit client contact records, passwords, or admin credentials. Inquiry rows, the Cloudflare Email Sending token, and the tunnel credential stay on the laptop. The schema and the data dictionary are in this repository.
 - The public pages are static HTML. The trip form posts to the inquiry API documented above. A successful save opens `thanks.html`. The admin sign-in and inquiry browser are not built yet.
 - DNS for `forevermemoriestravel.com` points at GitHub Pages. It does not point at the rshocking.com origin. `forevermemoriestravel.rshocking.com` was the earlier hostname.
 

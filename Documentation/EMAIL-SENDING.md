@@ -2,7 +2,7 @@
 
 This file is the record of Cloudflare Email Sending for `forevermemoriestravel.com`. It was checked against the Cloudflare API, public DNS at 1.1.1.1, the live site, and one delivered test message on 2026-10-14.
 
-The inquiry API still sends through Gmail SMTP. This onboarding does not change that code. A later change can send as `donotreply@forevermemoriestravel.com` because the domain is already onboarded. Do not onboard the domain again.
+The inquiry API sends through Cloudflare Email Sending as `donotreply@forevermemoriestravel.com`. The domain is already onboarded. Do not onboard it again.
 
 ## Account and domain
 
@@ -82,7 +82,7 @@ Use a Bearer token that can send mail. On this PC that token is in Windows Crede
 
 `from` is a string or an object with `address` and `name`. The REST field is `address`, not `email`. `reply_to` is snake case. Provide `text` and `html`. The live visitor subject is `We have your trip request`. The live staff subject is `Trip request — Forever Memories Travel`, and that copy still goes to `ryanhocking@gmail.com`.
 
-`api/app.py` was not changed. `send_mail` still uses `smtp.gmail.com` port 587 and `GMAIL_ADDRESS`.
+`send_mail` in `api/app.py` POSTs to the Email Sending API. It does not use `smtp.gmail.com`. The Bearer token is `CLOUDFLARE_EMAIL_API_TOKEN` in `/etc/forever-memories-inquiries.env`. The sample name, with a blank value, is in `api/.env.example`. Do not commit the token.
 
 ## Test on 2026-10-14
 

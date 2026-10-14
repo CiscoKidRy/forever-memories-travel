@@ -18,7 +18,7 @@ The database is PostgreSQL database `forever_memories` on `hp-linux-plex-server`
 
 ## Email sending
 
-Trip confirmations still leave through Gmail SMTP from the inquiry API. Cloudflare Email Sending is onboarded so a later change can send as `donotreply@forevermemoriestravel.com`. The record is [Documentation/EMAIL-SENDING.md](Documentation/EMAIL-SENDING.md). Do not enable Email Routing. Do not change the apex MX or the apex SPF TXT records. Do not onboard the domain again.
+Trip confirmations leave through Cloudflare Email Sending from the inquiry API as `donotreply@forevermemoriestravel.com`. The record is [Documentation/EMAIL-SENDING.md](Documentation/EMAIL-SENDING.md). Do not enable Email Routing. Do not change the apex MX or the apex SPF TXT records. Do not onboard the domain again.
 
 ## Google tag
 
