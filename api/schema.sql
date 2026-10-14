@@ -235,3 +235,6 @@ grant execute on function submit_inquiry(
 ) to fmtinq;
 grant execute on function mark_inquiry_email(uuid, text, text) to fmtinq;
 grant select on table inquiries to ryanhocking;
+
+-- Staff columns and functions. Does not replace submit_inquiry or mark_inquiry_email.
+\ir staff.sql
