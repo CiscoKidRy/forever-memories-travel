@@ -4,7 +4,7 @@ This process runs on the home Linux laptop and listens on `127.0.0.1:8787`. Clou
 
 The service account is `fmtinq`. It may execute `submit_inquiry` and `mark_inquiry_email`. It cannot select, update, or delete rows. The OS user `ryanhocking` can select rows through peer authentication.
 
-The visitor confirmation is an HTML message with a plain-text alternative. It uses the site logo, navy, gold, sky, and paper colors. The notice to the Gmail address stays plain text.
+The visitor confirmation and the lead notice are HTML messages with plain-text alternatives. Both use the site logo, navy, gold, sky, and paper colors.
 
 The database is `forever_memories` on `hp-linux-plex-server`. PostgreSQL listens on `127.0.0.1:5432` only. The column-by-column description is [Documentation/DATA-DICTIONARY.md](../Documentation/DATA-DICTIONARY.md). Any change to the database requires that data dictionary to be updated in the same pull request.
 
