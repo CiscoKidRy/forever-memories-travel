@@ -1,8 +1,7 @@
 const form = document.querySelector("#trip-form");
 const note = document.querySelector("#form-note");
 const submitButton = form.querySelector("button[type=submit]");
-const inbox = "jenniferr@dreamstravelconsulting.com";
-const copyTo = "ryanhocking@gmail.com";
+const inbox = "ryanhocking@gmail.com";
 const endpoint = `https://formsubmit.co/ajax/${inbox}`;
 
 form.addEventListener("submit", async (event) => {
@@ -35,7 +34,6 @@ form.addEventListener("submit", async (event) => {
         _subject: "Trip request — Forever Memories Travel",
         _template: "table",
         _captcha: "false",
-        _cc: copyTo,
         _url: "https://forevermemoriestravel.com/",
       }),
     });
@@ -44,15 +42,15 @@ form.addEventListener("submit", async (event) => {
     const accepted = response.ok && String(result.success) === "true";
     if (accepted) {
       form.reset();
-      note.textContent = "Sent. Jennifer Ramirez has your request.";
+      note.textContent = "Sent. We have your request.";
     } else if (/activat/i.test(message)) {
       form.reset();
-      note.textContent = "Received. Jennifer Ramirez will get this request after she confirms the form once.";
+      note.textContent = "Received. We will get this request after the form address is confirmed once.";
     } else {
-      note.textContent = `The request was not sent. Write to Jennifer Ramirez at ${inbox}.`;
+      note.textContent = "The request was not sent. Please try again.";
     }
   } catch (error) {
-    note.textContent = `The request was not sent. Write to Jennifer Ramirez at ${inbox}.`;
+    note.textContent = "The request was not sent. Please try again.";
   } finally {
     submitButton.disabled = false;
   }
