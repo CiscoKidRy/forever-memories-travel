@@ -92,7 +92,13 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); line-height: 1.15; margin: 0 0 0.6re
   cursor: pointer;
 }
 .button:hover { background: var(--navy-deep); }
-.button:disabled { opacity: 0.6; cursor: wait; }
+.button:disabled,
+.button.is-pending {
+  background: #5b656c;
+  color: #fff;
+  opacity: 1;
+  cursor: not-allowed;
+}
 
 .services { padding: 3rem 0; }
 .services .wrap {
@@ -165,6 +171,7 @@ textarea { resize: vertical; }
 .optional { font-weight: 400; color: #5c6b74; }
 .hp { position: absolute; left: -9999px; }
 .form-note { min-height: 1.2rem; margin: 0; font-weight: 400; color: var(--navy-deep); }
+.form-note[role="alert"] { font-weight: 700; }
 
 .site-footer {
   background: var(--navy);
@@ -174,6 +181,15 @@ textarea { resize: vertical; }
 }
 .site-footer p { margin: 0.2rem 0; }
 .site-footer p:first-child { font-family: var(--serif); font-size: 1.5rem; }
+.privacy-note {
+  max-width: 42rem;
+  margin: 0.9rem auto 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+.site-footer a { color: #fff; text-decoration: underline; }
+.thanks { padding: 4rem 0 5rem; text-align: center; }
+.thanks p { max-width: 36rem; margin-left: auto; margin-right: auto; }
 
 @media (max-width: 800px) {
   .services .wrap, .steps ol, .plan-grid { grid-template-columns: 1fr; }

@@ -10,6 +10,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Nunito+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-GYBCCKG2FJ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-GYBCCKG2FJ');
+  </script>
 </head>
 <body>
   <a class="skip" href="#content">Skip to content</a>
@@ -88,14 +96,14 @@
         </div>
         <form id="trip-form">
           <label>Your name
-            <input name="name" autocomplete="name" required>
+            <input name="name" autocomplete="name" maxlength="200" required>
           </label>
           <label>Email
-            <input name="email" type="email" autocomplete="email" required>
+            <input name="email" type="email" autocomplete="email" maxlength="254" required>
           </label>
           <label>
             <span>Phone <span class="optional">optional</span></span>
-            <input name="phone" type="tel" autocomplete="tel">
+            <input name="phone" type="tel" autocomplete="tel" maxlength="40">
           </label>
           <label>Trip
             <select name="trip" required>
@@ -108,13 +116,13 @@
             </select>
           </label>
           <label>When you want to travel
-            <input name="when" placeholder="Month, season, or dates">
+            <input name="when" maxlength="300" placeholder="Month, season, or dates">
           </label>
           <label>Who is going
-            <input name="who" placeholder="Adults, children, ages">
+            <input name="who" maxlength="400" placeholder="Adults, children, ages">
           </label>
           <label>What you want this trip to be
-            <textarea name="notes" rows="4"></textarea>
+            <textarea name="notes" rows="4" maxlength="4000"></textarea>
           </label>
           <p class="hp" aria-hidden="true">
             <label>Company
@@ -131,6 +139,7 @@
   <footer class="site-footer">
     <p>Forever Memories Travel</p>
     <p>Colorado Springs · Family vacations · Theme parks · Cruises · International travel</p>
+    <p class="privacy-note">This site uses cookies and Google Analytics to understand how the site is used. Google Analytics collects the pages visited and a client identifier stored in a cookie, and Google processes that information. <a href="https://www.google.com/policies/privacy/partners/">How Google uses information from sites or apps that use our services</a>. The trip form stores the name, email, phone, and trip details you enter, and emails a copy to you and to Forever Memories Travel.</p>
   </footer>
   <script src="site.js"></script>
 </body>
