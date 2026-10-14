@@ -7,10 +7,10 @@ The database password is not in this file.
 import json
 import os
 import re
-import smtplib
 import traceback
+import urllib.error
+import urllib.request
 from datetime import datetime
-from email.message import EmailMessage
 from html import escape
 from string import Template
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -48,6 +48,13 @@ LIMITS = {
 }
 DENVER = ZoneInfo("America/Denver")
 MAX_BODY = 32_000
+EMAIL_SEND_URL = (
+    "https://api.cloudflare.com/client/v4/accounts/"
+    "aac0196dfd6a1ccec84b92a22602ffb3/email/sending/send"
+)
+FROM_ADDRESS = "donotreply@forevermemoriestravel.com"
+FROM_NAME = "Forever Memories Travel"
+REPLY_TO = "ryanhocking@gmail.com"
 
 
 def database_url():
@@ -415,24 +422,57 @@ def lead_html(fields, stored, when):
     )
 
 
+def email_accepted(payload, recipient):
+    if not isinstance(payload, dict) or payload.get("success") is not True:
+        return False
+    result = payload.get("result")
+    if not isinstance(result, dict):
+        return False
+    bounced = result.get("permanent_bounces") or []
+    if recipient in bounced:
+        return False
+    delivered = result.get("delivered") or []
+    queued = result.get("queued") or []
+    return recipient in delivered or recipient in queued
+
+
 def send_mail(recipient, subject, body, html_body=None):
     if os.environ.get("MAIL_DISABLED", "").strip() == "1":
         raise MailOff()
-    sender = os.environ.get("GMAIL_ADDRESS", "").strip()
-    password = os.environ.get("GMAIL_APP_PASSWORD", "").strip()
-    if not sender or not password:
+    token = os.environ.get("CLOUDFLARE_EMAIL_API_TOKEN", "").strip()
+    if not token or not html_body:
         raise RuntimeError("mail is not configured")
-    message = EmailMessage()
-    message["From"] = f"Forever Memories Travel <{sender}>"
-    message["To"] = recipient
-    message["Subject"] = subject
-    message.set_content(body)
-    if html_body:
-        message.add_alternative(html_body, subtype="html")
-    with smtplib.SMTP("smtp.gmail.com", 587, timeout=20) as smtp:
-        smtp.starttls()
-        smtp.login(sender, password)
-        smtp.send_message(message)
+    payload = {
+        "from": {"address": FROM_ADDRESS, "name": FROM_NAME},
+        "to": recipient,
+        "reply_to": REPLY_TO,
+        "subject": subject,
+        "text": body,
+        "html": html_body,
+    }
+    request = urllib.request.Request(
+        EMAIL_SEND_URL,
+        data=json.dumps(payload).encode("utf-8"),
+        headers={
+            "Authorization": "Bearer " + token,
+            "Content-Type": "application/json",
+        },
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=20) as response:
+            raw = response.read()
+    except urllib.error.HTTPError as exc:
+        exc.read()
+        raise RuntimeError(f"email send failed: HTTP {exc.code}") from None
+    except urllib.error.URLError:
+        raise RuntimeError("email send failed: network") from None
+    try:
+        parsed = json.loads(raw.decode("utf-8"))
+    except json.JSONDecodeError:
+        raise RuntimeError("email send failed: bad response") from None
+    if not email_accepted(parsed, recipient):
+        raise RuntimeError("email send failed: not accepted")
 
 
 def deliver(fields, stored):
@@ -455,7 +495,7 @@ def deliver(fields, stored):
         traceback.print_exc()
     try:
         send_mail(
-            os.environ.get("GMAIL_ADDRESS", "ryanhocking@gmail.com").strip(),
+            "ryanhocking@gmail.com",
             "Trip request — Forever Memories Travel",
             lead_plain(fields, stored, when),
             lead_html(fields, stored, when),
