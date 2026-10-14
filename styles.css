@@ -53,7 +53,7 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); line-height: 1.15; margin: 0 0 0.6re
   text-transform: uppercase;
   font-size: 0.72rem;
   font-weight: 700;
-  color: var(--sky);
+  color: var(--navy);
   margin: 0.5rem 0;
 }
 .logo { width: min(440px, 88vw); margin: 0 auto; display: block; }
@@ -71,9 +71,10 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); line-height: 1.15; margin: 0 0 0.6re
   font-size: 0.92rem;
   font-weight: 700;
 }
-.nav a:hover { color: var(--red); }
-.nav-plan {
-  color: var(--red) !important;
+.nav a:hover { color: var(--navy-deep); }
+.nav a.nav-plan {
+  color: var(--navy-deep);
+  text-decoration: underline;
 }
 
 .intro { padding: 3.5rem 0 2.5rem; text-align: center; background: var(--paper); }
@@ -90,7 +91,7 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); line-height: 1.15; margin: 0 0 0.6re
   font: 700 1rem var(--sans);
   cursor: pointer;
 }
-.button:hover { background: var(--red); }
+.button:hover { background: var(--navy-deep); }
 .button:disabled { opacity: 0.6; cursor: wait; }
 
 .services { padding: 3rem 0; }
@@ -107,11 +108,11 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); line-height: 1.15; margin: 0 0 0.6re
 }
 .kicker {
   margin: 0;
-  color: var(--red);
+  color: var(--navy-deep);
   letter-spacing: 0.04em;
   font-size: 1.35rem;
 }
-.kicker.light { color: var(--gold); }
+.kicker.light { color: var(--navy-deep); }
 
 .steps { background: var(--navy-deep); color: white; padding: 3rem 0; }
 .steps h2 { color: white; }
