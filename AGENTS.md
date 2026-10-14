@@ -1,6 +1,10 @@
 # Instructions for people and AI tools
 
-Do not commit directly to `main`.
+Do not commit directly to `main`, except the staff publish button described under CMS publish.
+
+## CMS publish
+
+The staff admin publishes `content/site.json` and files under `assets/media/` to `main` through the GitHub Contents API. That write is the publish button. Do not open a second pull request for a file the admin just published. Every other change, including the first copy of those paths, still uses a feature branch and a pull request.
 
 1. Create a new branch named `feat/<short-description>`.
 2. Make the change on that branch.
