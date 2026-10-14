@@ -27,6 +27,14 @@ a { color: var(--navy); }
 h1, h2, .kicker { font-family: var(--serif); font-weight: 500; }
 h1 { font-size: clamp(2.4rem, 5vw, 4.2rem); line-height: 1.05; margin: 0 0 0.6rem; color: var(--navy-deep); }
 h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); line-height: 1.15; margin: 0 0 0.6rem; color: var(--navy-deep); }
+.services h3 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 1.25rem;
+  line-height: 1.3;
+  margin: 0 0 0.45rem;
+  color: var(--navy);
+}
 
 .skip {
   position: absolute;
@@ -122,6 +130,14 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); line-height: 1.15; margin: 0 0 0.6re
 
 .steps { background: var(--navy-deep); color: white; padding: 3rem 0; }
 .steps h2 { color: white; }
+.steps h3 {
+  font-family: var(--sans);
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 0 0 0.35rem;
+  color: white;
+}
 .steps ol {
   list-style: none;
   padding: 0;
@@ -177,19 +193,32 @@ textarea { resize: vertical; }
   background: var(--navy);
   color: white;
   text-align: center;
-  padding: 1.6rem 1rem 2rem;
+  padding: 2rem 1.25rem 2.2rem;
 }
-.site-footer p { margin: 0.2rem 0; }
-.site-footer p:first-child { font-family: var(--serif); font-size: 1.5rem; }
-.privacy-note {
-  max-width: 42rem;
-  margin: 0.9rem auto 0;
+.site-footer p { margin: 0.25rem auto; }
+.site-footer p:first-child {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  font-style: normal;
+}
+.site-footer p:nth-child(2) {
+  max-width: 36rem;
   font-size: 0.95rem;
-  line-height: 1.5;
+  font-style: italic;
+}
+.privacy-note {
+  max-width: 34rem;
+  margin: 0.85rem auto 0;
+  font-size: 0.8rem;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.55;
+  text-align: center;
 }
 .site-footer a { color: #fff; text-decoration: underline; }
 .thanks { padding: 4rem 0 5rem; text-align: center; }
 .thanks p { max-width: 36rem; margin-left: auto; margin-right: auto; }
+#thanks-heading:focus { outline: none; }
 
 @media (max-width: 800px) {
   .services .wrap, .steps ol, .plan-grid { grid-template-columns: 1fr; }

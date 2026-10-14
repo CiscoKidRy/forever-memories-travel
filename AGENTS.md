@@ -25,3 +25,7 @@ Trip confirmations leave through Cloudflare Email Sending from the inquiry API a
 Public pages on `forevermemoriestravel.com`, and any new public site on that domain, use one Google tag with measurement ID `G-GYBCCKG2FJ`. The rules are on the repository front page, [README.md](README.md#google-tag). The property record is [Documentation/GOOGLE-TAG.md](Documentation/GOOGLE-TAG.md).
 
 Do not add a Tag Manager container. Do not create a second property, stream, or measurement ID for a new hostname on this domain. Do not send names, email addresses, phone numbers, notes, or record ids to Google. Send `generate_lead` only after a stored request. Update `Documentation/GOOGLE-TAG.md` in the same pull request when tagging changes.
+
+## Search
+
+Search copy, `robots.txt`, the sitemap, `llms.txt`, and the travel-agency structured data are recorded in [Documentation/SEO.md](Documentation/SEO.md). Keep the words travel, cruise, Disney, Colorado Springs, and Orlando in ordinary sentences on the home page. Do not stuff them into a list, the logo description, or hidden text. Do not link to a similarly named agency. Do not add a social link unless Ryan confirms the profile is this agency, and then record it in `Documentation/SEO.md` in the same pull request. `thanks.html` stays `noindex` and stays out of the sitemap. Do not disallow it in `robots.txt`. The 14 October 2026 SEOptimer audit is recorded in that file. Do not add a Facebook pixel, a bought link, or a link to a referring domain named there. Do not change the apex SPF records.
