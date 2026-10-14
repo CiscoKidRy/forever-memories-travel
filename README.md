@@ -2,6 +2,18 @@
 
 Private code store for the Forever Memories Travel website.
 
+## How to change this repository
+
+Do not commit directly to `main`.
+
+1. Create a new branch named `feat/<short-description>`.
+2. Make the change on that branch.
+3. Open a pull request that merges that branch into `main`.
+4. Write a description of what changed. Put it in the pull request body. Say what changed and why. A title alone is not the description.
+5. Merge only through that pull request.
+
+This applies to every change, including documentation, site files, and generated content. It applies to people and to AI tools. The same instructions are in [AGENTS.md](AGENTS.md). GitHub starts a new pull request from [.github/pull_request_template.md](.github/pull_request_template.md). Fill that in.
+
 ## Product
 
 - Public website for a travel agency: descriptions, images, stories, and listings.
@@ -19,6 +31,8 @@ The logo on the site is the JPEG Jennifer Ramirez sent on 2026-10-03 from jennif
 Cutover to `forevermemoriestravel.com` was approved on 2026-10-13. The nameservers are Cloudflare (`apollo.ns.cloudflare.com` and `gabriella.ns.cloudflare.com`). The apex has GitHub Pages A and AAAA records, and `www` is a CNAME to `ciscokidry.github.io`. Those records are DNS only so GitHub can see its own addresses and issue the certificate. The MX and SPF records for DirectNIC hosting were left in place. The lookalike name `forevermemroriestravel.com` is not registered.
 
 ## This repository
+
+Changes follow [How to change this repository](#how-to-change-this-repository) and [AGENTS.md](AGENTS.md). Every pull request needs a written description of what changed.
 
 - Visibility: public, because GitHub's free plan will not serve Pages from a private repository. Do not commit client contact records, passwords, or admin credentials. When the contact database is built, that data stays out of this repository.
 - The first pages are static HTML. The trip form sends the request to Jennifer Ramirez at jenniferr@dreamstravelconsulting.com through FormSubmit, and FormSubmit copies ryanhocking@gmail.com. She must confirm that address once before delivery starts. The first time the copy address is used, FormSubmit may ask ryanhocking@gmail.com to confirm before those copies arrive. The admin sign-in and contact database are not built yet.
