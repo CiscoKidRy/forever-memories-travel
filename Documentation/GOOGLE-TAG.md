@@ -130,6 +130,17 @@ These paths do not send `generate_lead`:
 
 `form_submit` from enhanced measurement can still fire when the browser submits the form. That event is not the lead and is not a key event.
 
+## Section time
+
+`site.js` sends `section_visible` when one of seven regions leaves the viewport, or the tab hides, after it has been at least half visible for one second or more. The clock pauses while the tab is hidden. One view is capped at 1,800,000 milliseconds.
+
+| Parameter | Value |
+| --- | --- |
+| `section_name` | `intro`, `vacations`, `parks`, `cruises`, `international`, `steps`, or `plan` |
+| `visible_msec` | integer milliseconds, 1000 to 1800000 |
+
+The event does not include a name, email, phone, notes, inquiry id, or pointer position. It is not a key event. Hash links do not send an extra `page_view`. Register `section_name` as an event-scoped custom dimension and `visible_msec` as a custom metric on property `properties/558909334` before a report groups by them.
+
 ## Privacy notice
 
 The footer on `index.html` and `thanks.html` says the site uses cookies and Google Analytics, that Analytics collects pages visited and a client id stored in a cookie, and that Google processes that information. The link text is "How Google uses information from sites or apps that use our services" and the address is `https://www.google.com/policies/privacy/partners/`.

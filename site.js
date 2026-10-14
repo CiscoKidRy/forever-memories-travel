@@ -130,3 +130,177 @@ form.addEventListener("submit", async (event) => {
     unlockButton("The request was not sent. Please try again.");
   }
 });
+
+function setText(node, value) {
+  if (node && typeof value === "string") {
+    node.textContent = value;
+  }
+}
+
+function applyContent(data) {
+  if (!data || data.version !== 1) {
+    return;
+  }
+  const agency = data.agency || {};
+  const intro = data.intro || {};
+  const plan = data.plan || {};
+  setText(document.querySelector("[data-field='eyebrow']"), agency.eyebrow);
+  setText(document.querySelector("[data-field='footer-line']"), agency.footerLine);
+  setText(document.querySelector("[data-field='intro-heading']"), intro.heading);
+  setText(document.querySelector("[data-field='intro-lede']"), intro.lede);
+  setText(document.querySelector("[data-field='plan-kicker']"), plan.kicker);
+  setText(document.querySelector("[data-field='plan-heading']"), plan.heading);
+  setText(document.querySelector("[data-field='plan-body']"), plan.body);
+  (data.sections || []).forEach((section) => {
+    const article = document.getElementById(section.id);
+    if (!article) {
+      return;
+    }
+    setText(article.querySelector("[data-field='kicker']"), section.kicker);
+    setText(article.querySelector("[data-field='heading']"), section.heading);
+    setText(article.querySelector("[data-field='body']"), section.body);
+  });
+  const steps = document.querySelectorAll("#steps li");
+  (data.steps || []).forEach((step, index) => {
+    const item = steps[index];
+    if (!item) {
+      return;
+    }
+    setText(item.querySelector("[data-field='title']"), step.title);
+    setText(item.querySelector("[data-field='body']"), step.body);
+  });
+  renderStories(data.stories || []);
+  renderListings(data.listings || []);
+}
+
+function articleBlock(item) {
+  const article = document.createElement("article");
+  const kicker = document.createElement("p");
+  kicker.className = "kicker";
+  kicker.textContent = item.title || "";
+  const summary = document.createElement("p");
+  summary.textContent = item.summary || "";
+  const body = document.createElement("p");
+  body.textContent = item.body || "";
+  article.append(kicker, summary, body);
+  if (item.image) {
+    const image = document.createElement("img");
+    image.src = item.image;
+    image.alt = item.imageAlt || "";
+    article.prepend(image);
+  }
+  return article;
+}
+
+function renderStories(stories) {
+  const existing = document.getElementById("stories");
+  if (!stories.length) {
+    if (existing) {
+      existing.remove();
+    }
+    return;
+  }
+  const section = existing || document.createElement("section");
+  section.id = "stories";
+  section.className = "services";
+  section.replaceChildren();
+  const wrap = document.createElement("div");
+  wrap.className = "wrap";
+  const heading = document.createElement("h2");
+  heading.textContent = "Stories";
+  wrap.append(heading);
+  stories.forEach((item) => wrap.append(articleBlock(item)));
+  section.append(wrap);
+  if (!existing) {
+    document.getElementById("steps").before(section);
+  }
+}
+
+function renderListings(listings) {
+  const existing = document.getElementById("listings");
+  if (!listings.length) {
+    if (existing) {
+      existing.remove();
+    }
+    return;
+  }
+  const section = existing || document.createElement("section");
+  section.id = "listings";
+  section.className = "services";
+  section.replaceChildren();
+  const wrap = document.createElement("div");
+  wrap.className = "wrap";
+  const heading = document.createElement("h2");
+  heading.textContent = "Listings";
+  wrap.append(heading);
+  ["family", "park", "cruise", "international"].forEach((category) => {
+    const group = listings.filter((item) => item.category === category);
+    group.forEach((item) => wrap.append(articleBlock(item)));
+  });
+  section.append(wrap);
+  if (!existing) {
+    document.getElementById("steps").before(section);
+  }
+}
+
+fetch("/content/site.json", { cache: "no-cache" })
+  .then((response) => (response.ok ? response.json() : null))
+  .then((data) => applyContent(data))
+  .catch(() => {});
+
+const sectionNames = ["intro", "vacations", "parks", "cruises", "international", "steps", "plan"];
+const visibleSince = new Map();
+
+function flushSection(name) {
+  const started = visibleSince.get(name);
+  if (!started) {
+    return;
+  }
+  visibleSince.delete(name);
+  const elapsed = Math.min(1800000, Date.now() - started);
+  if (elapsed < 1000 || typeof gtag !== "function") {
+    return;
+  }
+  gtag("event", "section_visible", {
+    section_name: name,
+    visible_msec: elapsed,
+  });
+}
+
+function markVisible(name) {
+  if (!document.hidden && !visibleSince.has(name)) {
+    visibleSince.set(name, Date.now());
+  }
+}
+
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    sectionNames.forEach(flushSection);
+  }
+});
+
+window.addEventListener("pagehide", () => {
+  sectionNames.forEach(flushSection);
+});
+
+if ("IntersectionObserver" in window) {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      const name = entry.target.id;
+      if (!sectionNames.includes(name)) {
+        return;
+      }
+      if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+        markVisible(name);
+      } else {
+        flushSection(name);
+      }
+    });
+  }, { threshold: [0, 0.5] });
+  sectionNames.forEach((name) => {
+    const node = document.getElementById(name);
+    if (node) {
+      observer.observe(node);
+    }
+  });
+}
