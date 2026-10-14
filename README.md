@@ -60,7 +60,7 @@ Public browsers reach the API through a Cloudflare Tunnel. There is no router po
 
 The credential file is not in this repository. Do not commit it.
 
-The apex `forevermemoriestravel.com` and `www` stay DNS-only and point at GitHub Pages. The MX and SPF records stay on DirectNIC. Do not point the apex, `www`, or mail records at this tunnel. Do not reuse the other Cloudflare tunnels that terminate SSH for other machines.
+The apex `forevermemoriestravel.com` and `www` stay DNS-only and point at GitHub Pages. The apex MX and the existing apex SPF TXT records stay on DirectNIC. Email Sending uses separate records on `cf-bounce`, recorded in [Documentation/EMAIL-SENDING.md](Documentation/EMAIL-SENDING.md). Do not point the apex, `www`, or mail records at this tunnel. Do not reuse the other Cloudflare tunnels that terminate SSH for other machines.
 
 The send button turns grey and stays disabled while the request is in flight. `thanks.html` opens only after the API accepts the row. If the laptop or the tunnel is down, the form stays on the page and does not say the request was saved. Nothing is sent to dreamstravelconsulting.com.
 
@@ -78,7 +78,7 @@ The public site is `https://forevermemoriestravel.com`. `https://www.forevermemo
 
 The logo on the site is the JPEG Jennifer Ramirez sent on 2026-10-03 from jenniferr@dreamstravelconsulting.com, subject "Thank you", body "The idea". Madison's "FMT Logo" message the same day has a larger PNG. That PNG was not copied into the repo because the mail download exceeded the tool size limit.
 
-Cutover to `forevermemoriestravel.com` was approved on 2026-10-13. The nameservers are Cloudflare (`apollo.ns.cloudflare.com` and `gabriella.ns.cloudflare.com`). The apex has GitHub Pages A and AAAA records, and `www` is a CNAME to `ciscokidry.github.io`. Those records are DNS only so GitHub can see its own addresses and issue the certificate. The MX and SPF records for DirectNIC hosting were left in place. The lookalike name `forevermemroriestravel.com` is not registered.
+Cutover to `forevermemoriestravel.com` was approved on 2026-10-13. The nameservers are Cloudflare (`apollo.ns.cloudflare.com` and `gabriella.ns.cloudflare.com`). The apex has GitHub Pages A and AAAA records, and `www` is a CNAME to `ciscokidry.github.io`. Those records are DNS only so GitHub can see its own addresses and issue the certificate. The apex MX and the existing apex SPF TXT records for DirectNIC hosting were left in place. Email Sending was added later on `cf-bounce`. The record is [Documentation/EMAIL-SENDING.md](Documentation/EMAIL-SENDING.md). The lookalike name `forevermemroriestravel.com` is not registered.
 
 ## This repository
 
