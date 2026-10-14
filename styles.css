@@ -27,7 +27,8 @@ a { color: var(--navy); }
 h1, h2, .kicker { font-family: var(--serif); font-weight: 500; }
 h1 { font-size: clamp(2.4rem, 5vw, 4.2rem); line-height: 1.05; margin: 0 0 0.6rem; color: var(--navy-deep); }
 h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); line-height: 1.15; margin: 0 0 0.6rem; color: var(--navy-deep); }
-.services h3 {
+.services h3,
+.guide h3 {
   font-family: var(--serif);
   font-weight: 500;
   font-size: 1.25rem;
@@ -35,6 +36,14 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); line-height: 1.15; margin: 0 0 0.6re
   margin: 0 0 0.45rem;
   color: var(--navy);
 }
+.page-more { margin: 0.9rem 0 0; font-weight: 700; }
+.guide { padding: 0.5rem 0 3rem; }
+.guide .wrap { max-width: 40rem; }
+.guide h2 { margin-top: 1.8rem; }
+.guide h3 { margin-top: 1.2rem; }
+.guide ul { margin: 0.4rem 0 0; padding-left: 1.2rem; }
+.guide li { margin: 0.35rem 0; }
+.cite { margin-top: 1.5rem; font-size: 0.92rem; }
 
 .skip {
   position: absolute;
@@ -65,6 +74,8 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); line-height: 1.15; margin: 0 0 0.6re
   margin: 0.5rem 0;
 }
 .logo { width: min(440px, 88vw); margin: 0 auto; display: block; }
+.logo-link { display: inline-block; line-height: 0; text-decoration: none; }
+.logo-link:focus-visible { outline: 2px solid var(--navy); outline-offset: 4px; }
 .nav {
   display: flex;
   flex-wrap: wrap;

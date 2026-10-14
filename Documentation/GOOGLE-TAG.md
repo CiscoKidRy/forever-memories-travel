@@ -143,7 +143,7 @@ The event does not include a name, email, phone, notes, inquiry id, or pointer p
 
 ## Privacy notice
 
-The footer on `index.html` and `thanks.html` says the site uses cookies and Google Analytics, that Analytics collects pages visited and a client id stored in a cookie, and that Google processes that information. The link text is "How Google uses information from sites or apps that use our services" and the address is `https://www.google.com/policies/privacy/partners/`.
+The footer on `index.html`, `thanks.html`, `family.html`, `parks.html`, `cruises.html`, and `international.html` says the site uses cookies and Google Analytics, that Analytics collects pages visited and a client id stored in a cookie, and that Google processes that information. The link text is "How Google uses information from sites or apps that use our services" and the address is `https://www.google.com/policies/privacy/partners/`.
 
 The same paragraph says the trip form stores the name, email, phone, and trip details and emails a copy to the visitor and to Forever Memories Travel. If the form's recipients change, change this sentence in the same pull request. Keep the sentence matched to the form.
 
@@ -165,6 +165,8 @@ Current lead sources:
 | `lead_source` | Page | When it fires |
 | --- | --- | --- |
 | `trip_form` | `index.html` through [site.js](../site.js) | Inquiry API returns HTTP 201 with an id |
+
+`family.html`, `parks.html`, `cruises.html`, and `international.html` use the plain snippet above. They do not set `page_location`. They do not load `site.js`. They do not send `generate_lead`. They use the same privacy footer. Do not add a `lead_source` for those pages. The trip form remains the only lead.
 
 The API hostname `inquiries.forevermemoriestravel.com` stays untagged.
 
