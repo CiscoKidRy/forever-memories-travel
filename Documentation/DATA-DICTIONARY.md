@@ -71,6 +71,9 @@ The server sets `submitted_at`. The form cannot choose it. A `BEFORE INSERT` tri
 | `client_ip` | `inet` | no | | none | Client address from `CF-Connecting-IP` when that header is present, otherwise the socket peer. |
 | `visitor_email_status` | `text` | no | `pending` | none | Delivery state of the visitor's confirmation email. |
 | `ryan_email_status` | `text` | no | `pending` | none | Delivery state of the notice to `ryanhocking@gmail.com`. |
+| `status` | `text` | no | `new` | none | Staff progress. `new`, `contacted`, `planning`, `booked`, `closed`, or `spam`. Existing rows stay `new` when the column is added. |
+| `staff_notes` | `text` | yes | | none | Private staff note. Null, or trimmed with length 1 to 4000. Not published. |
+| `staff_updated_at` | `timestamptz` | yes | | none | When `update_inquiry_staff` last wrote `status` or `staff_notes`. |
 
 `client_ip` is trusted from `CF-Connecting-IP` because the API port is localhost and `cloudflared` is the process that sets the header.
 
@@ -91,6 +94,8 @@ The server sets `submitted_at`. The form cannot choose it. A `BEFORE INSERT` tri
 | `inquiries_source_url` | Length 1 to 500, and matches `https://forevermemoriestravel.com` or `https://www.forevermemoriestravel.com`, with an optional path. |
 | `inquiries_visitor_email_status` | `pending`, `sent`, or `failed`. |
 | `inquiries_ryan_email_status` | `pending`, `sent`, or `failed`. |
+| `inquiries_status` | `new`, `contacted`, `planning`, `booked`, `closed`, or `spam`. |
+| `inquiries_staff_notes` | Null, or trimmed with length 1 to 4000. |
 
 ## Indexes
 
@@ -101,6 +106,7 @@ The server sets `submitted_at`. The form cannot choose it. A `BEFORE INSERT` tri
 | `inquiries_submitted_at_idx` | `submitted_at` descending |
 | `inquiries_fingerprint_submitted_idx` | `payload_fingerprint`, `submitted_at` descending |
 | `inquiries_client_ip_submitted_idx` | `client_ip`, `submitted_at` descending |
+| `inquiries_status_submitted_idx` | `status`, `submitted_at` descending |
 
 ## When a row is created
 
@@ -133,12 +139,25 @@ The API calls this function after each delivery attempt. `fmtinq` has no `UPDATE
 | Role | Access |
 | --- | --- |
 | `postgres` | Owns the table, the trigger function, `submit_inquiry`, and `mark_inquiry_email`. Used to apply the schema and to delete test rows. |
-| `fmtinq` | `EXECUTE` on `submit_inquiry` and `mark_inquiry_email` only. No select, insert, update, or delete on `inquiries`. |
+| `fmtinq` | `EXECUTE` on `submit_inquiry` and `mark_inquiry_email` only. No select, insert, update, or delete on `inquiries`. No execute on the staff functions. |
+| `fmtstaff` | `EXECUTE` on `list_inquiries`, `get_inquiry`, and `update_inquiry_staff` only. No table privileges. Login role, peer authentication, no password. |
 | `ryanhocking` | `SELECT` on `inquiries` through peer authentication as the operating-system user. |
-| `public` | All privileges revoked on `inquiries`, `submit_inquiry`, `mark_inquiry_email`, and `inquiries_stamp_submitted_at`. |
+| `public` | All privileges revoked on `inquiries`, `submit_inquiry`, `mark_inquiry_email`, `inquiries_stamp_submitted_at`, and the three staff functions. |
 
 `fmtinq` and `ryanhocking` are login roles. The schema script creates a missing role. It does not set a password.
 
 ## Trigger
 
 `inquiries_stamp_submitted_at` runs `BEFORE INSERT` on each row and calls `inquiries_stamp_submitted_at()`. The function sets `NEW.submitted_at` to `clock_timestamp()` and returns the row. There is no update or delete trigger.
+
+## Staff functions
+
+`api/staff.sql` adds `status`, `staff_notes`, and `staff_updated_at`, plus three functions. It does not replace `submit_inquiry` or `mark_inquiry_email`. That file was applied on the laptop on 14 October 2026. Do not apply it again. Do not run all of `schema.sql` against the live database.
+
+`list_inquiries(p_status text, p_limit integer)` returns at most 100 rows, newest first. A null status returns every status. It omits `client_ip`, `idempotency_key`, and `payload_fingerprint`.
+
+`get_inquiry(p_id uuid)` returns one row with the same omissions, or no row.
+
+`update_inquiry_staff(p_id uuid, p_status text, p_staff_notes text)` writes only `status`, `staff_notes`, and `staff_updated_at`. Blank notes are stored as null. Email statuses stay unchanged.
+
+The staff API is `api/staff_api.py`, systemd unit `forever-memories-staff`, user `fmtstaff`, listen `127.0.0.1:8788`. It requires `Authorization: Bearer`. The public inquiry process on port 8787 does not call these functions. The bearer is stored in `/etc/forever-memories-staff.env` and is not in git.
