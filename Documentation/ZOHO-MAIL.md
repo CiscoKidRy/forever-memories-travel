@@ -2,25 +2,33 @@
 
 Checked at 2026-10-25 20:24 America/Denver (2026-10-26 02:24 UTC). Ryan asked for Zoho Mail Free mailboxes at `jennifer@forevermemoriestravel.com` and `michael@forevermemoriestravel.com`.
 
-Those mailboxes were not created. No Zoho DNS record was published. Cloudflare Email Routing was not enabled. The inquiry form's Reply-To was not changed. In this repository, `api/app.py` sets `REPLY_TO` to `ryanhocking@gmail.com`.
+Those mailboxes were not created. Cloudflare Email Routing was not enabled. The inquiry form's Reply-To was not changed. In this repository, `api/app.py` sets `REPLY_TO` to `ryanhocking@gmail.com`.
+
+The ownership TXT was published at 2026-10-25 20:37 America/Denver (2026-10-26 02:37 UTC). Ryan chose manual configuration and supplied the value from the Zoho Admin Console. MX, SPF, and DKIM were not changed.
+
+| Type | Name | Value | Cloudflare record id | TTL |
+| --- | --- | --- | --- | --- |
+| TXT | `forevermemoriestravel.com` | `zoho-verification=zb42114402.zmverify.zoho.com` | `f50f14cc89227dda409178738e0906ee` | 120 |
+
+Authoritative DNS at `apollo.ns.cloudflare.com` returned that string, the one existing SPF record, and both Google site-verification strings. Apex MX was still `web71.dnchosting.com` priority 0. Zoho had not reported the domain verified at the time of the write. The next step in the Admin Console is Verify. This TXT does not deliver mail. The host `zmverify.zoho.com` in the value is the verification target. It is not an MX hostname. Do not delete this TXT.
 
 This file is the record a later person or AI tool should read before touching mail DNS for this domain.
 
 ## Why it stopped
 
-Zoho generates the ownership record, the MX hostnames, and the DKIM public key only after an organization exists. Those values were not available.
+Zoho generates the ownership record, the MX hostnames, and the DKIM public key only after an organization exists. The ownership value is now published above. The MX hostnames and the DKIM public key were still not available.
 
-- The Mail Free plan is the plan on [Zoho's pricing page](https://www.zoho.com/mail/zohomail-pricing.html). That page links Mail Free signup to `https://mail.zoho.com/signup?type=org&plan=free` and also links `https://workplace.zoho.com/signup?type=org&plan=free` from the Forever Free callout. Neither link was opened to create an account. The page says Mail Free is forever free, does not require a credit card, allows up to 5 users on one custom domain, gives 5 GB of mail storage per user, does not include file storage, does not include IMAP, POP, or ActiveSync, and does include the mobile app. A sixth user moves every user onto a paid plan. The Forever Free note says the plan is available only in select data centers. The page does not list those data centers.
+- The Mail Free plan is the plan on [Zoho's pricing page](https://www.zoho.com/mail/zohomail-pricing.html). That page links Mail Free signup to `https://mail.zoho.com/signup?type=org&plan=free` and also links `https://workplace.zoho.com/signup?type=org&plan=free` from the Forever Free callout. Ryan reached domain verification in the Zoho Admin Console. The signup URL he used was not recorded in this file. The page says Mail Free is forever free, does not require a credit card, allows up to 5 users on one custom domain, gives 5 GB of mail storage per user, does not include file storage, does not include IMAP, POP, or ActiveSync, and does include the mobile app. A sixth user moves every user onto a paid plan. The Forever Free note says the plan is available only in select data centers. The page does not list those data centers.
 - [Zoho's setup guide](https://www.zoho.com/mail/complete-guide-to-setup-zohomail.html), updated 2026-10-13, says signup needs a domain with DNS access, a mobile number that can receive a text message, and an email address. It says the free plan does not require payment details, and that the free plan may be unavailable in some regions. After domain verification, the first mailbox created becomes the super administrator. Adding a user asks for a first name, a last name, and a password of at least 8 characters with one digit, one uppercase letter, one lowercase letter, and one special character.
 - No Zoho admin session was available. Windows Credential Manager had no target whose name contained Zoho. The 1Password CLI was installed and `op whoami` returned `no account found for filter`. Gmail search did not run: the local Gmail token refresh returned `invalid_grant`. Display names and passwords were not invented. The Mail API was not called.
-- Domain ownership proof is a TXT or CNAME that Zoho shows only after the domain is added at [the Admin Console](https://mailadmin.zoho.com). That value is unique to the account. It was not generated.
+- Domain ownership proof is a TXT or CNAME that Zoho shows only after the domain is added at [the Admin Console](https://mailadmin.zoho.com). The value Ryan supplied is the TXT in the table above. One-click DNS login was not used.
 - MX hostnames depend on the data center. [Configure Email Delivery](https://www.zoho.com/mail/help/adminconsole/configure-email-delivery.html), updated 2026-10-01, says the TLD varies by data center and that only the MX records in that account's Tools & Configurations should be used. [Zoho's Cloudflare page](https://www.zoho.com/mail/help/adminconsole/cloudflare.html) shows a generic set, `mx.zoho.com` priority 10, `mx2.zoho.com` priority 20, and `mx3.zoho.com` priority 50, and then says those values are generic. Do not publish that generic set.
 - DKIM is a TXT Zoho generates in the admin console. It was not generated. A Zoho selector must not replace `cf-bounce._domainkey`.
 - Zoho's Cloudflare one-click verification was not used. That flow authorizes Zoho to write DNS. The same Cloudflare help page tells the MX step to delete existing MX records and shows the generic MX set. This zone also has `cf-bounce` MX records, one apex SPF record, and two Google site-verification TXT records. An automatic write can drop or rewrite those.
 
 ## What was left in place
 
-Read from the Cloudflare API for zone `d8abd6e253f3f4f48ae4a3f38daa2b70` and from authoritative DNS at `apollo.ns.cloudflare.com` at the time above. The API and the authoritative nameserver agreed.
+Read from the Cloudflare API for zone `d8abd6e253f3f4f48ae4a3f38daa2b70` and from authoritative DNS at `apollo.ns.cloudflare.com`. The ownership row was added at 20:37. The MX and the other TXT rows were still present on that authoritative lookup.
 
 | Type | Name | Value | Cloudflare record id |
 | --- | --- | --- | --- |
@@ -29,6 +37,7 @@ Read from the Cloudflare API for zone `d8abd6e253f3f4f48ae4a3f38daa2b70` and fro
 | TXT | `forevermemoriestravel.com` | `google-site-verification=1kKYEQptuBPWJNtVMC0G5gf9vGTzLLu7Viz9z92DTW4` | `5119e72e8c614323a9c4d266915fef14` |
 | TXT | `forevermemoriestravel.com` | `google-site-verification=Gxq4rbtulg2szN_Lr0nt8Uoy-pezNA5CSOEv0p04Nlc` | `df689df1a54fcd9e96189c1021277b52` |
 | TXT | `_dmarc.forevermemoriestravel.com` | `v=DMARC1; p=none; rua=mailto:ryanhocking@gmail.com` | `0acbc7d1094acbae0a424ee17845beb5` |
+| TXT | `forevermemoriestravel.com` | `zoho-verification=zb42114402.zmverify.zoho.com` | `f50f14cc89227dda409178738e0906ee` |
 
 There is one apex TXT that starts with `v=spf1`. Earlier the same evening, `1.1.1.1` still returned a second TXT, `v=spf1 mx ptr ~all` glued to the second Google site-verification value. Authoritative DNS and the API no longer had that glued record. Do not restore it. `1.1.1.1` can lag the authoritative nameserver.
 
