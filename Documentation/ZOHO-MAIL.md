@@ -25,7 +25,7 @@ The organization is on the Zoho US hosts. Mail API calls go to `https://mail.zoh
 
 The first domain read on 2026-10-26, before the apex MX change, returned `mxstatus` `disabled` and `spfstatus` false. After the MX and SPF changes below, the domain read returned `mxstatus` `enabled` and `spfstatus` true.
 
-`jennifer@forevermemoriestravel.com` exists and is the super admin. `michael@forevermemoriestravel.com` does not exist. The organization account list has one user.
+`jennifer@forevermemoriestravel.com` exists and is the super admin. `michael@forevermemoriestravel.com` exists and is a member. The organization account list has two users.
 
 | Field | Value |
 | --- | --- |
@@ -44,7 +44,28 @@ The first domain read on 2026-10-26, before the apex MX change, returned `mxstat
 | activeSyncEnabled | false |
 | deliveryType | `LOCAL` |
 
-The same user object lists `ryanhocking@gmail.com` with `isAlias` false, `isPrimary` false, and `isConfirmed` true. That is the confirmed Zoho account identity. It is not a `forevermemoriestravel.com` mailbox and it is not an MX result.
+The same Jennifer user object lists `ryanhocking@gmail.com` with `isAlias` false, `isPrimary` false, and `isConfirmed` true. That is the confirmed Zoho account identity. It is not a `forevermemoriestravel.com` mailbox and it is not an MX result.
+
+Ryan supplied the name Michael Madison on 2026-10-26. The mailbox was created with `oneTimePassword` true, so the first sign-in must set a new password. The password is not in this repository. Two messages were sent from `ryanhocking@gmail.com`: one with the username and the sign-in link `https://mail.zoho.com/`, and one with the one-time password. Gmail message ids `1a1765351a6d8f26` and `1a1765354b38410b`.
+
+| Field | Value |
+| --- | --- |
+| accountId | `8855991000000008002` |
+| zuid | `944091336` |
+| primaryEmailAddress | `michael@forevermemoriestravel.com` |
+| firstName | `Michael` |
+| lastName | `Madison` |
+| displayName | `Michael Madison` |
+| role | `member` |
+| mailboxStatus | `enabled` |
+| allowedStorage | `5242880` KB, which is 5 GB |
+| usedStorage | `0` |
+| imapAccessEnabled | false |
+| popAccessEnabled | false |
+| activeSyncEnabled | false |
+| country | `us` |
+| language | `en` |
+| timeZone | `America/Denver` |
 
 The organization storage call returned `totalStorage` `free` for this user. `subscriptionInfo` did not include a plan-name string. `GET /api/organization` returned `INVALID_OAUTHSCOPE` because the granted scopes do not include `ZohoMail.partner.organization`. The 5 GB quota, the `free` storage string, and IMAP, POP, and ActiveSync being off match the Mail Free plan described on [Zoho's pricing page](https://www.zoho.com/mail/zohomail-pricing.html). This file does not claim that `subscriptionInfo` returned the words Mail Free.
 
@@ -142,8 +163,7 @@ These records stay untouched by the mailbox work:
 ## What is still required
 
 1. Leave `_dmarc` at `p=none`. Leave the three `cf-bounce` MX records and the `cf-bounce` SPF in place. Keep exactly one apex TXT that starts with `v=spf1`.
-2. Create `michael@forevermemoriestravel.com` only after Ryan supplies a first name, a last name, and a password. Zoho requires a password of at least 8 characters with one digit, one uppercase letter, one lowercase letter, and one special character. Do not invent the name or the password. Do not store the password in this repository. Do not email Jennifer or Michael.
-3. Update this file in the same pull request when `michael@` exists.
+2. Do not store a mailbox password in this repository. Do not reset Michael's password unless Ryan asks. Do not email Jennifer.
 
 Do not change the form Reply-To to either address unless Ryan says those people should receive traveler replies and a test has shown the mailbox receiving mail.
 
@@ -158,7 +178,7 @@ Separate the two mail paths before changing DNS.
 | Form confirmation | Cloudflare Email Sending from `donotreply@forevermemoriestravel.com` | [EMAIL-SENDING.md](EMAIL-SENDING.md). Apex MX does not send this mail. |
 | A person's mailbox | Apex MX | `Resolve-DnsName forevermemoriestravel.com -Type MX -Server apollo.ns.cloudflare.com` |
 
-The published apex MX hosts are `mx.zoho.com` priority 10, `mx2.zoho.com` priority 20, and `mx3.zoho.com` priority 50. `jennifer@forevermemoriestravel.com` exists in Zoho. `michael@forevermemoriestravel.com` does not exist in Zoho. No test message was sent.
+The published apex MX hosts are `mx.zoho.com` priority 10, `mx2.zoho.com` priority 20, and `mx3.zoho.com` priority 50. `jennifer@forevermemoriestravel.com` and `michael@forevermemoriestravel.com` exist in Zoho. No test message to either mailbox was sent.
 
 If the apex MX has been changed to Zoho and new mail does not arrive:
 
@@ -176,4 +196,4 @@ If the form stops sending, follow [EMAIL-SENDING.md](EMAIL-SENDING.md). Do not p
 
 ## What this file is not
 
-It is not a statement that a test message was delivered. Zoho verified the MX records and the SPF record. It is not a statement that `michael@forevermemoriestravel.com` exists.
+It is not a statement that a test message was delivered. Zoho verified the MX records and the SPF record. Both `jennifer@forevermemoriestravel.com` and `michael@forevermemoriestravel.com` exist.
