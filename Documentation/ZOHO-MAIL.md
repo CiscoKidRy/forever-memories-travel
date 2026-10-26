@@ -20,10 +20,10 @@ The organization is on the Zoho US hosts. Mail API calls go to `https://mail.zoh
 | mailHostingEnabled | true |
 | isRegisteredByZohoMail | false |
 | mxstatus | `enabled` |
-| spfstatus | false |
+| spfstatus | true |
 | dkimstatus | true |
 
-The first domain read on 2026-10-26, before the apex MX change, returned `mxstatus` `disabled`. After the three Zoho MX records below were published, `verifyMxRecord` returned `mxstatus` true and the next domain read returned `mxstatus` `enabled`. `spfstatus` was still false.
+The first domain read on 2026-10-26, before the apex MX change, returned `mxstatus` `disabled` and `spfstatus` false. After the MX and SPF changes below, the domain read returned `mxstatus` `enabled` and `spfstatus` true.
 
 `jennifer@forevermemoriestravel.com` exists and is the super admin. `michael@forevermemoriestravel.com` does not exist. The organization account list has one user.
 
@@ -100,17 +100,28 @@ The domain API object does not include MX hostnames. This organization uses `htt
 | MX | `forevermemoriestravel.com` | `mx2.zoho.com` priority 20 | `4732ab8a4e850e68b56f36eb306628b0` | 120 |
 | MX | `forevermemoriestravel.com` | `mx3.zoho.com` priority 50 | `a098638d6e521d1e427f8e286a0b4e94` | 120 |
 
-Authoritative DNS at `apollo.ns.cloudflare.com` returned those three hosts and no other apex MX. Zoho `verifyMxRecord` then returned `mxstatus` true. No test message was sent.
+Authoritative DNS at `apollo.ns.cloudflare.com` returned those three hosts and no other apex MX. Zoho `verifyMxRecord` then returned `mxstatus` true. Ryan's Admin Console then showed "Your domain's MX Records are pointed to Zoho" with the same three hosts and priorities. No test message was sent.
 
 If a later Tools & Configurations screen for this organization shows different hosts, replace these three with that screen's hosts and update this file in the same change.
 
-## DNS that was not changed
+## Apex SPF
 
-The SPF help page on `zoho.com` shows `v=spf1 include:zohomail.com ~all` in its DNS steps and `v=spf1 include:zohomail.com -all` in another paragraph. Ryan did not paste an SPF value from Tools & Configurations. The apex SPF was left as it was. Outbound mail from Zoho can fail SPF until that one apex SPF is replaced with the string from that screen. The current record still contains `+mx`, which now refers to the Zoho MX hosts, plus `ip4:192.64.150.71` and `include:spf.dnchosting.com`.
+Ryan pasted [the SPF help page](https://www.zoho.com/mail/help/adminconsole/spf-configuration.html), updated 2026-10-01. That page gives `v=spf1 include:zohomail.com -all` as the strict record and tells the DNS steps to enter `v=spf1 include:zohomail.com ~all`. It says `~all` is the soft-fail form when other servers also send for the domain.
+
+The existing apex TXT, record id `0b6c3863f317260239b252377817feab`, was updated in place. It had been `v=spf1 +mx +a +ip4:192.64.150.71 +include:spf.dnchosting.com ~all`. The published value is the `~all` string from the DNS steps. `include:spf.dnchosting.com` and `ip4:192.64.150.71` are gone. A second SPF record was not added. Form mail stays on `cf-bounce`, whose own SPF was not changed. `~all` was used so a sender at the apex that is outside Zoho soft-fails. `-all` was not published.
+
+The Mail API mode that works is `VerifySpfRecord`. `verifySpfRecord` returns `Invalid mode`. `VerifySpfRecord` returned `spfstatus` true, and the following domain read returned `spfstatus` true.
+
+| Type | Name | Value | Cloudflare record id | TTL |
+| --- | --- | --- | --- | --- |
+| TXT | `forevermemoriestravel.com` | `v=spf1 include:zohomail.com ~all` | `0b6c3863f317260239b252377817feab` | 120 |
+
+Authoritative DNS at `apollo.ns.cloudflare.com` returned that one `v=spf1` string, both Google site-verification strings, and the ownership TXT.
+
+## DNS that was not changed
 
 | Type | Name | Value | Cloudflare record id |
 | --- | --- | --- | --- |
-| TXT | `forevermemoriestravel.com` | `v=spf1 +mx +a +ip4:192.64.150.71 +include:spf.dnchosting.com ~all` | `0b6c3863f317260239b252377817feab` |
 | TXT | `forevermemoriestravel.com` | `google-site-verification=1kKYEQptuBPWJNtVMC0G5gf9vGTzLLu7Viz9z92DTW4` | `5119e72e8c614323a9c4d266915fef14` |
 | TXT | `forevermemoriestravel.com` | `google-site-verification=Gxq4rbtulg2szN_Lr0nt8Uoy-pezNA5CSOEv0p04Nlc` | `df689df1a54fcd9e96189c1021277b52` |
 | TXT | `_dmarc.forevermemoriestravel.com` | `v=DMARC1; p=none; rua=mailto:ryanhocking@gmail.com` | `0acbc7d1094acbae0a424ee17845beb5` |
@@ -130,11 +141,9 @@ These records stay untouched by the mailbox work:
 
 ## What is still required
 
-1. Read the SPF string from this organization's Tools & Configurations screen at [the Admin Console](https://mailadmin.zoho.com). The domain GET does not return it. Replace the one apex SPF TXT with that string. Keep both Google site-verification strings as their own TXT records. Keep the ownership TXT. Do not leave `include:spf.dnchosting.com` or `ip4:192.64.150.71` in a second SPF record. Exactly one TXT on the apex may start with `v=spf1`.
-2. Leave `_dmarc` at `p=none`. Leave the three `cf-bounce` MX records in place.
-3. Ask Zoho to verify SPF. Wait until the domain read shows `spfstatus` true before saying Zoho outbound mail passes SPF.
-4. Create `michael@forevermemoriestravel.com` only after Ryan supplies a first name, a last name, and a password. Zoho requires a password of at least 8 characters with one digit, one uppercase letter, one lowercase letter, and one special character. Do not invent the name or the password. Do not store the password in this repository. Do not email Jennifer or Michael.
-5. Update this file in the same pull request with the published SPF string and whether `michael@` exists.
+1. Leave `_dmarc` at `p=none`. Leave the three `cf-bounce` MX records and the `cf-bounce` SPF in place. Keep exactly one apex TXT that starts with `v=spf1`.
+2. Create `michael@forevermemoriestravel.com` only after Ryan supplies a first name, a last name, and a password. Zoho requires a password of at least 8 characters with one digit, one uppercase letter, one lowercase letter, and one special character. Do not invent the name or the password. Do not store the password in this repository. Do not email Jennifer or Michael.
+3. Update this file in the same pull request when `michael@` exists.
 
 Do not change the form Reply-To to either address unless Ryan says those people should receive traveler replies and a test has shown the mailbox receiving mail.
 
@@ -167,4 +176,4 @@ If the form stops sending, follow [EMAIL-SENDING.md](EMAIL-SENDING.md). Do not p
 
 ## What this file is not
 
-It is not a statement that a test message was delivered. Zoho verified the MX records. It is not a statement that `michael@forevermemoriestravel.com` exists. It is not a statement that outbound Zoho mail passes SPF.
+It is not a statement that a test message was delivered. Zoho verified the MX records and the SPF record. It is not a statement that `michael@forevermemoriestravel.com` exists.

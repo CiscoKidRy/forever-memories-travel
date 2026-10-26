@@ -51,7 +51,7 @@ DNS status for subdomain `6496d34df8614da5a64f13bf7b28ab6a` was `ready` with an 
 
 The two apex TXT strings were already there on 2026-10-14. Two `v=spf1` records on the same name make apex SPF a permerror. They were not merged or split during Email Sending setup. Sending SPF lives on `cf-bounce`, so Cloudflare outbound does not use the apex SPF.
 
-On 2026-10-25 20:24 America/Denver, authoritative DNS at `apollo.ns.cloudflare.com` no longer had the glued apex TXT in the table above. The SPF value in that table was still the only apex SPF. The Google site-verification value that had been glued on was its own TXT. Earlier that evening, `1.1.1.1` still returned the glued string. Do not restore the glued record. The apex MX row in that table is the 2026-10-14 value. It was replaced on 2026-10-26. Current apex mail DNS is in [ZOHO-MAIL.md](ZOHO-MAIL.md).
+On 2026-10-25 20:24 America/Denver, authoritative DNS at `apollo.ns.cloudflare.com` no longer had the glued apex TXT in the table above. The SPF value in that table was still the only apex SPF. The Google site-verification value that had been glued on was its own TXT. Earlier that evening, `1.1.1.1` still returned the glued string. Do not restore the glued record. The apex MX row and the apex SPF row in that table are the 2026-10-14 values. Both were replaced on 2026-10-26. Current apex mail DNS is in [ZOHO-MAIL.md](ZOHO-MAIL.md).
 
 Email Routing stays off. No `rshocking.com` record was changed.
 
