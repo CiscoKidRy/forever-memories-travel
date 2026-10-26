@@ -24,7 +24,7 @@ The database is PostgreSQL database `forever_memories` on `hp-linux-plex-server`
 
 Trip confirmations leave through Cloudflare Email Sending from the inquiry API as `donotreply@forevermemoriestravel.com`. The record is [Documentation/EMAIL-SENDING.md](Documentation/EMAIL-SENDING.md). Do not enable Email Routing. Do not onboard the domain again. Do not run the Email Sending DNS fix.
 
-`jennifer@forevermemoriestravel.com` exists in Zoho Mail and is the super admin. `michael@forevermemoriestravel.com` does not exist. The domain is verified, and the `zoho._domainkey` TXT from this organization is published. The apex MX is still `web71.dnchosting.com`, so internet mail does not arrive at Zoho. The record is [Documentation/ZOHO-MAIL.md](Documentation/ZOHO-MAIL.md). Do not delete the ownership TXT or the `zoho._domainkey` TXT. Do not publish the generic `mx.zoho.com` set. Do not change the apex MX or the apex SPF TXT until that file records the hosts and SPF string taken from this organization's Tools & Configurations screen.
+`jennifer@forevermemoriestravel.com` exists in Zoho Mail and is the super admin. `michael@forevermemoriestravel.com` does not exist. The domain is verified. The apex MX is `mx.zoho.com` priority 10, `mx2.zoho.com` priority 20, and `mx3.zoho.com` priority 50. The `zoho._domainkey` TXT from this organization is published. The apex SPF is `v=spf1 include:zohomail.com ~all`. The record is [Documentation/ZOHO-MAIL.md](Documentation/ZOHO-MAIL.md). Do not delete the ownership TXT, the `zoho._domainkey` TXT, or those three MX records. Do not add `web71.dnchosting.com` back. Do not add a second apex SPF. Do not put `include:spf.dnchosting.com` back.
 
 ## Google tag
 
