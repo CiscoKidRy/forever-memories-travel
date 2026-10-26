@@ -19,11 +19,11 @@ The organization is on the Zoho US hosts. Mail API calls go to `https://mail.zoh
 | verifiedBy | zuid `944089540`, address `jennifer@forevermemoriestravel.com` |
 | mailHostingEnabled | true |
 | isRegisteredByZohoMail | false |
-| mxstatus | `disabled` |
+| mxstatus | `enabled` |
 | spfstatus | false |
 | dkimstatus | true |
 
-`mxstatus` `disabled` means Zoho does not consider the apex MX pointed at Zoho. It does not mean the mailbox is off.
+The first domain read on 2026-10-26, before the apex MX change, returned `mxstatus` `disabled`. After the three Zoho MX records below were published, `verifyMxRecord` returned `mxstatus` true and the next domain read returned `mxstatus` `enabled`. `spfstatus` was still false.
 
 `jennifer@forevermemoriestravel.com` exists and is the super admin. `michael@forevermemoriestravel.com` does not exist. The organization account list has one user.
 
@@ -82,15 +82,34 @@ DKIM was added through the Mail API for this domain. The request used `mode` `ad
 
 Authoritative DNS at `apollo.ns.cloudflare.com` returned that TXT with length 410, starting `v=DKIM1; k=rsa; p=MI`. `cf-bounce._domainkey` was still present. Do not regenerate this DKIM key. Regeneration replaces the public value and the TXT above stops matching. Do not edit `cf-bounce._domainkey`.
 
+## Apex MX
+
+On 2026-10-26 Ryan pasted the public page [Configure Email Delivery](https://www.zoho.com/mail/help/adminconsole/configure-email-delivery.html), updated 2026-10-01, and said those were the MX settings. That page shows this table and says the table is generic configuration information:
+
+| Host | Mail server | Priority |
+| --- | --- | --- |
+| `@` | `mx.zoho.com` | 10 |
+| `@` | `mx2.zoho.com` | 20 |
+| `@` | `mx3.zoho.com` | 50 |
+
+The domain API object does not include MX hostnames. This organization uses `https://mail.zoho.com`, `https://accounts.zoho.com`, and `zmverify.zoho.com`, and the mailbox country is `us`. Those are the US hosts, and the table on that US help page uses the `.com` names. The three records below were published from that page. The old apex MX `web71.dnchosting.com` priority 0, Cloudflare record id `48112d794e723a9ed9b579a00a32b084`, was deleted only after all three creates succeeded. `cf-bounce` MX records were not changed.
+
+| Type | Name | Value | Cloudflare record id | TTL |
+| --- | --- | --- | --- | --- |
+| MX | `forevermemoriestravel.com` | `mx.zoho.com` priority 10 | `9e2f423a8f886574e1177aa3518e6d9e` | 120 |
+| MX | `forevermemoriestravel.com` | `mx2.zoho.com` priority 20 | `4732ab8a4e850e68b56f36eb306628b0` | 120 |
+| MX | `forevermemoriestravel.com` | `mx3.zoho.com` priority 50 | `a098638d6e521d1e427f8e286a0b4e94` | 120 |
+
+Authoritative DNS at `apollo.ns.cloudflare.com` returned those three hosts and no other apex MX. Zoho `verifyMxRecord` then returned `mxstatus` true. No test message was sent.
+
+If a later Tools & Configurations screen for this organization shows different hosts, replace these three with that screen's hosts and update this file in the same change.
+
 ## DNS that was not changed
 
-The domain API object does not include MX hostnames or the SPF string. [Configure Email Delivery](https://www.zoho.com/mail/help/adminconsole/configure-email-delivery.html), updated 2026-10-01, shows `mx.zoho.com` priority 10, `mx2.zoho.com` priority 20, and `mx3.zoho.com` priority 50, and says that table is generic. Publish only the hosts shown for this organization in Tools & Configurations. The SPF help page on `zoho.com` shows `v=spf1 include:zohomail.com ~all` in its DNS steps and `v=spf1 include:zohomail.com -all` in another paragraph. That page is not this organization's Tools & Configurations response. The apex SPF was left as it was.
-
-Read from the Cloudflare API on 2026-10-26. The zone had 22 DNS records.
+The SPF help page on `zoho.com` shows `v=spf1 include:zohomail.com ~all` in its DNS steps and `v=spf1 include:zohomail.com -all` in another paragraph. Ryan did not paste an SPF value from Tools & Configurations. The apex SPF was left as it was. Outbound mail from Zoho can fail SPF until that one apex SPF is replaced with the string from that screen. The current record still contains `+mx`, which now refers to the Zoho MX hosts, plus `ip4:192.64.150.71` and `include:spf.dnchosting.com`.
 
 | Type | Name | Value | Cloudflare record id |
 | --- | --- | --- | --- |
-| MX | `forevermemoriestravel.com` | `web71.dnchosting.com` priority 0 | `48112d794e723a9ed9b579a00a32b084` |
 | TXT | `forevermemoriestravel.com` | `v=spf1 +mx +a +ip4:192.64.150.71 +include:spf.dnchosting.com ~all` | `0b6c3863f317260239b252377817feab` |
 | TXT | `forevermemoriestravel.com` | `google-site-verification=1kKYEQptuBPWJNtVMC0G5gf9vGTzLLu7Viz9z92DTW4` | `5119e72e8c614323a9c4d266915fef14` |
 | TXT | `forevermemoriestravel.com` | `google-site-verification=Gxq4rbtulg2szN_Lr0nt8Uoy-pezNA5CSOEv0p04Nlc` | `df689df1a54fcd9e96189c1021277b52` |
@@ -98,7 +117,7 @@ Read from the Cloudflare API on 2026-10-26. The zone had 22 DNS records.
 
 There is one apex TXT that starts with `v=spf1`. On 2026-10-25 a glued second TXT, `v=spf1 mx ptr ~all`, was removed. Do not restore it. `1.1.1.1` can lag `apollo.ns.cloudflare.com`.
 
-`web71.dnchosting.com` resolved at `1.1.1.1` on 2026-10-25 to A `192.64.150.71` and AAAA `2602:fc8e:0:688e:150::71`. Ryan said `https://web71.dnchosting.com` does not exist and that the DirectNIC mailbox option is scratched. The MX record is still in place because this organization's MX hostnames have not been read from Tools & Configurations. This file does not claim that host accepts SMTP. Mail to `jennifer@forevermemoriestravel.com` still follows this MX. The Zoho mailbox existing does not receive that mail.
+The zone had 22 DNS records before this MX change and 24 after it: three MX records added and the `web71.dnchosting.com` MX deleted.
 
 These records stay untouched by the mailbox work:
 
@@ -111,13 +130,11 @@ These records stay untouched by the mailbox work:
 
 ## What is still required
 
-1. Read the MX hostnames and the SPF string from this organization's Tools & Configurations screen at [the Admin Console](https://mailadmin.zoho.com). The domain GET does not return them.
-2. Replace only the apex MX with those hosts. Leave the three `cf-bounce` MX records in place.
-3. Replace the one apex SPF TXT with the one SPF string from that screen. Keep both Google site-verification strings as their own TXT records. Keep the ownership TXT. Do not leave `include:spf.dnchosting.com` or `ip4:192.64.150.71` in a second SPF record. Exactly one TXT on the apex may start with `v=spf1`.
-4. Leave `_dmarc` at `p=none`.
-5. Ask Zoho to verify MX and SPF. Wait until the domain read shows `mxstatus` no longer `disabled`, and `spfstatus` true, before saying mail is live.
-6. Create `michael@forevermemoriestravel.com` only after Ryan supplies a first name, a last name, and a password. Zoho requires a password of at least 8 characters with one digit, one uppercase letter, one lowercase letter, and one special character. Do not invent the name or the password. Do not store the password in this repository. Do not email Jennifer or Michael.
-7. Update this file in the same pull request with the published MX hosts, the published SPF string, and whether `michael@` exists.
+1. Read the SPF string from this organization's Tools & Configurations screen at [the Admin Console](https://mailadmin.zoho.com). The domain GET does not return it. Replace the one apex SPF TXT with that string. Keep both Google site-verification strings as their own TXT records. Keep the ownership TXT. Do not leave `include:spf.dnchosting.com` or `ip4:192.64.150.71` in a second SPF record. Exactly one TXT on the apex may start with `v=spf1`.
+2. Leave `_dmarc` at `p=none`. Leave the three `cf-bounce` MX records in place.
+3. Ask Zoho to verify SPF. Wait until the domain read shows `spfstatus` true before saying Zoho outbound mail passes SPF.
+4. Create `michael@forevermemoriestravel.com` only after Ryan supplies a first name, a last name, and a password. Zoho requires a password of at least 8 characters with one digit, one uppercase letter, one lowercase letter, and one special character. Do not invent the name or the password. Do not store the password in this repository. Do not email Jennifer or Michael.
+5. Update this file in the same pull request with the published SPF string and whether `michael@` exists.
 
 Do not change the form Reply-To to either address unless Ryan says those people should receive traveler replies and a test has shown the mailbox receiving mail.
 
@@ -132,7 +149,7 @@ Separate the two mail paths before changing DNS.
 | Form confirmation | Cloudflare Email Sending from `donotreply@forevermemoriestravel.com` | [EMAIL-SENDING.md](EMAIL-SENDING.md). Apex MX does not send this mail. |
 | A person's mailbox | Apex MX | `Resolve-DnsName forevermemoriestravel.com -Type MX -Server apollo.ns.cloudflare.com` |
 
-Until this file names published Zoho MX hosts, the apex MX is `web71.dnchosting.com`. `jennifer@forevermemoriestravel.com` exists in Zoho and does not receive internet mail. `michael@forevermemoriestravel.com` does not exist in Zoho.
+The published apex MX hosts are `mx.zoho.com` priority 10, `mx2.zoho.com` priority 20, and `mx3.zoho.com` priority 50. `jennifer@forevermemoriestravel.com` exists in Zoho. `michael@forevermemoriestravel.com` does not exist in Zoho. No test message was sent.
 
 If the apex MX has been changed to Zoho and new mail does not arrive:
 
@@ -150,4 +167,4 @@ If the form stops sending, follow [EMAIL-SENDING.md](EMAIL-SENDING.md). Do not p
 
 ## What this file is not
 
-It is not a statement that internet mail arrives at Zoho. The apex MX is still `web71.dnchosting.com`. It is not a statement that `michael@forevermemoriestravel.com` exists. It is not a statement that a test message was delivered.
+It is not a statement that a test message was delivered. Zoho verified the MX records. It is not a statement that `michael@forevermemoriestravel.com` exists. It is not a statement that outbound Zoho mail passes SPF.
