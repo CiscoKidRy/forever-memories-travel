@@ -124,7 +124,7 @@ Authoritative DNS at `apollo.ns.cloudflare.com` returned that one `v=spf1` strin
 | --- | --- | --- | --- |
 | TXT | `forevermemoriestravel.com` | `google-site-verification=1kKYEQptuBPWJNtVMC0G5gf9vGTzLLu7Viz9z92DTW4` | `5119e72e8c614323a9c4d266915fef14` |
 | TXT | `forevermemoriestravel.com` | `google-site-verification=Gxq4rbtulg2szN_Lr0nt8Uoy-pezNA5CSOEv0p04Nlc` | `df689df1a54fcd9e96189c1021277b52` |
-| TXT | `_dmarc.forevermemoriestravel.com` | `v=DMARC1; p=none; rua=mailto:ryanhocking@gmail.com` | `0acbc7d1094acbae0a424ee17845beb5` |
+| TXT | `_dmarc.forevermemoriestravel.com` | `v=DMARC1; p=none; rua=mailto:ryanhocking@gmail.com; ruf=mailto:ryanhocking@gmail.com; sp=none; adkim=r; aspf=r` | `0acbc7d1094acbae0a424ee17845beb5` |
 
 There is one apex TXT that starts with `v=spf1`. On 2026-10-25 a glued second TXT, `v=spf1 mx ptr ~all`, was removed. Do not restore it. `1.1.1.1` can lag `apollo.ns.cloudflare.com`.
 
@@ -137,7 +137,7 @@ These records stay untouched by the mailbox work:
 - `www` CNAME `ciscokidry.github.io`, DNS-only.
 - `inquiries` proxied CNAME to tunnel `d0dd55a4-e1fa-49b1-a9ba-75e6e133dc1d.cfargotunnel.com`.
 - `cf-bounce` MX, SPF, and DKIM selector `cf-bounce`. The record is [EMAIL-SENDING.md](EMAIL-SENDING.md).
-- DMARC policy `p=none`. Do not run the Email Sending DNS fix. It can write `p=reject`.
+- DMARC policy `p=none`. On 2026-10-26 Ryan generated `v=DMARC1; p=none; rua=mailto:ryanhocking@gmail.com; ruf=mailto:ryanhocking@gmail.com; sp=none; adkim=r; aspf=r` in the Zoho Admin Console. The existing `_dmarc` TXT was updated in place. `p` stayed `none`. `ruf` sends failure reports to `ryanhocking@gmail.com`. `sp=none`, `adkim=r`, and `aspf=r` are the relaxed defaults. Do not run the Email Sending DNS fix. It can write `p=reject`.
 
 ## What is still required
 
