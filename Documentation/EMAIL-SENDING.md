@@ -49,7 +49,9 @@ DNS status for subdomain `6496d34df8614da5a64f13bf7b28ab6a` was `ready` with an 
 | `www` | CNAME `ciscokidry.github.io`, DNS-only |
 | `inquiries` | proxied CNAME to tunnel `d0dd55a4-e1fa-49b1-a9ba-75e6e133dc1d` |
 
-The two apex TXT strings were already there. Two `v=spf1` records on the same name make apex SPF a permerror. They were not merged or split. Sending SPF lives on `cf-bounce`, so Cloudflare outbound does not use the apex SPF.
+The two apex TXT strings were already there on 2026-10-14. Two `v=spf1` records on the same name make apex SPF a permerror. They were not merged or split during Email Sending setup. Sending SPF lives on `cf-bounce`, so Cloudflare outbound does not use the apex SPF.
+
+On 2026-10-25 20:24 America/Denver, authoritative DNS at `apollo.ns.cloudflare.com` no longer had the glued apex TXT in the table above. The SPF value in that table was still the only apex SPF. The Google site-verification value that had been glued on was its own TXT. Earlier that evening, `1.1.1.1` still returned the glued string. Do not restore the glued record. Current apex mail DNS is in [ZOHO-MAIL.md](ZOHO-MAIL.md).
 
 Email Routing stays off. No `rshocking.com` record was changed.
 
