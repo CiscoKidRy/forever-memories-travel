@@ -93,7 +93,7 @@ Cutover to `forevermemoriestravel.com` was approved on 2026-10-13. The nameserve
 Changes follow [How to change this repository](#how-to-change-this-repository) and [AGENTS.md](AGENTS.md). Every pull request needs a written description of what changed.
 
 - Visibility: public, because GitHub's free plan will not serve Pages from a private repository. Do not commit client contact records, passwords, or admin credentials. Inquiry rows, the Cloudflare Email Sending token, and the tunnel credential stay on the laptop. The schema and the data dictionary are in this repository.
-- The public pages are static HTML. The trip form posts to the inquiry API documented above. A successful save opens `thanks.html`. Staff sign-in is built at `https://fmt-admin.ryanhocking.workers.dev/admin`. The inquiry screens in that Worker are built. They cannot list or update trip requests until the staff path on the inquiry host is connected to the laptop. That connection is not done.
+- The public pages are static HTML. The trip form posts to the inquiry API documented above. A successful save opens `thanks.html`. Staff sign-in is at `https://fmt-admin.ryanhocking.workers.dev/admin`. On 2026-10-27 the existing hostname `inquiries.forevermemoriestravel.com` sends a path starting with `/staff` to the staff API on `127.0.0.1:8788`. Every other path on that hostname stays on the public inquiry API at `127.0.0.1:8787`. A signed-in staff user who has changed their password can list and update the stored trip requests. A user who still has to change their password gets 403 until they do.
 - DNS for `forevermemoriestravel.com` points at GitHub Pages. It does not point at the rshocking.com origin. `forevermemoriestravel.rshocking.com` was the earlier hostname.
 
 ## Never commit
