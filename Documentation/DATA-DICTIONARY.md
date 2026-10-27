@@ -72,8 +72,8 @@ The server sets `submitted_at`. The form cannot choose it. A `BEFORE INSERT` tri
 | `visitor_email_status` | `text` | no | `pending` | none | Delivery state of the visitor's confirmation email. |
 | `ryan_email_status` | `text` | no | `pending` | none | Delivery state of the notice to `ryanhocking@gmail.com`. |
 | `status` | `text` | no | `new` | none | Staff progress. `new`, `contacted`, `planning`, `booked`, `closed`, or `spam`. Existing rows stay `new` when the column is added. |
-| `staff_notes` | `text` | yes | | none | Private staff note. Null, or trimmed with length 1 to 4000. Not published. |
-| `staff_updated_at` | `timestamptz` | yes | | none | When `update_inquiry_staff` last wrote `status` or `staff_notes`. |
+| `staff_notes` | `text` | yes | | none | Copy of the newest `inquiry_staff_notes` row whose `deleted_at` is null. Null when that inquiry has no such row. Not published. |
+| `staff_updated_at` | `timestamptz` | yes | | none | `created_at` of that same row. Null when `staff_notes` is null. A status-only save does not change it. |
 
 `client_ip` is trusted from `CF-Connecting-IP` because the API port is localhost and `cloudflared` is the process that sets the header.
 
@@ -138,11 +138,11 @@ The API calls this function after each delivery attempt. `fmtinq` has no `UPDATE
 
 | Role | Access |
 | --- | --- |
-| `postgres` | Owns the table, the trigger function, `submit_inquiry`, and `mark_inquiry_email`. Used to apply the schema and to delete test rows. |
+| `postgres` | Owns `inquiries`, the trigger function, `submit_inquiry`, and `mark_inquiry_email`. Also owns `inquiry_staff_notes` and the five functions named in Staff functions. Used to apply the schema and to delete test rows. |
 | `fmtinq` | `EXECUTE` on `submit_inquiry` and `mark_inquiry_email` only. No select, insert, update, or delete on `inquiries`. No execute on the staff functions. |
-| `fmtstaff` | `EXECUTE` on `list_inquiries`, `get_inquiry`, and `update_inquiry_staff` only. No table privileges. Login role, peer authentication, no password. |
+| `fmtstaff` | `EXECUTE` on `list_inquiries`, `get_inquiry`, `update_inquiry_staff`, `list_staff_notes`, and `delete_staff_note`. No execute on `purge_expired_staff_notes` or `refresh_inquiry_staff_summary`. No select, insert, update, or delete on `inquiry_staff_notes`. No table privileges on `inquiries`. Login role, peer authentication, no password. |
 | `ryanhocking` | `SELECT` on `inquiries` through peer authentication as the operating-system user. |
-| `public` | All privileges revoked on `inquiries`, `submit_inquiry`, `mark_inquiry_email`, `inquiries_stamp_submitted_at`, and the three staff functions. |
+| `public` | All privileges revoked on `inquiries`, `submit_inquiry`, `mark_inquiry_email`, `inquiries_stamp_submitted_at`, and the staff functions. No execute on `list_staff_notes`, `delete_staff_note`, `update_inquiry_staff`, `purge_expired_staff_notes`, or `refresh_inquiry_staff_summary`. No select on `inquiry_staff_notes`. |
 
 `fmtinq` and `ryanhocking` are login roles. The schema script creates a missing role. It does not set a password.
 
@@ -158,6 +158,22 @@ The API calls this function after each delivery attempt. `fmtinq` has no `UPDATE
 
 `get_inquiry(p_id uuid)` returns one row with the same omissions, or no row.
 
-`update_inquiry_staff(p_id uuid, p_status text, p_staff_notes text)` writes only `status`, `staff_notes`, and `staff_updated_at`. Blank notes are stored as null. Email statuses stay unchanged.
+`update_inquiry_staff(p_id uuid, p_status text, p_staff_notes text)` writes `status`. A non-blank trimmed note is inserted into `inquiry_staff_notes`. A blank note does not insert a row and does not delete an older row. The function then sets `staff_notes` and `staff_updated_at` from the newest note whose `deleted_at` is null. Email statuses stay unchanged.
 
-The staff API is `api/staff_api.py`, systemd unit `forever-memories-staff`, user `fmtstaff`, listen `127.0.0.1:8788`. It requires `Authorization: Bearer`. The public inquiry process on port 8787 does not call these functions. The bearer is stored in `/etc/forever-memories-staff.env` and is not in git.
+`inquiry_staff_notes` stores one row per saved staff note.
+
+| Column | Type | Null | Default |
+| --- | --- | --- | --- |
+| `id` | `uuid` | no | `gen_random_uuid()` |
+| `inquiry_id` | `uuid` | no | |
+| `body` | `text` | no | |
+| `created_at` | `timestamptz` | no | `clock_timestamp()` |
+| `deleted_at` | `timestamptz` | yes | |
+
+`inquiry_staff_notes_pkey` is the primary key on `id`. `inquiry_staff_notes_inquiry_id_fkey` references `inquiries(id)` and deletes the note rows when the inquiry is deleted. `inquiry_staff_notes_body` requires `body` to be trimmed and between 1 and 4000 characters. `inquiry_staff_notes_inquiry_idx` is a btree on (`inquiry_id`, `created_at` descending). The table owner is `postgres`.
+
+`delete_staff_note` sets `deleted_at` to `clock_timestamp()` and does not change `deleted_at` if it is already set. `purge_expired_staff_notes` deletes every note row whose `deleted_at` is not null and is at or before `clock_timestamp() - interval '48 hours'`. On this database, `interval '48 hours'` is 172800 seconds. `interval '2 days'` is not the same across a daylight-saving change: adding it to 2026-10-31 10:00-06 measured 176400 seconds, and adding it to 2026-03-07 10:00-07 measured 169200 seconds. The purge does not use local midnight. `list_staff_notes`, `delete_staff_note`, and `update_inquiry_staff` call that purge before they finish. `list_staff_notes` then returns the one inquiry's remaining rows, including rows still inside the 48 hours, newest `created_at` first. `GET /staff/inquiries` does not call the purge. `GET /staff/inquiries/{id}`, `PATCH /staff/inquiries/{id}`, and `DELETE /staff/inquiries/{id}/notes/{note_id}` do. There is no scheduled job. `fmtstaff` can execute `list_staff_notes`, `delete_staff_note`, and `update_inquiry_staff`. `purge_expired_staff_notes` and `refresh_inquiry_staff_summary` are not granted to `fmtstaff`.
+
+`api/staff-notes.sql` is the change applied for this table. Do not apply `api/staff.sql` again. Do not run all of `schema.sql` against the live database.
+
+The staff API is `api/staff_api.py`, systemd unit `forever-memories-staff`, user `fmtstaff`, listen `127.0.0.1:8788`. `GET /staff/inquiries/{id}` adds `staff_note_entries`. `DELETE /staff/inquiries/{id}/notes/{note_id}` soft-deletes one note and returns the inquiry. It requires `Authorization: Bearer`. The public inquiry process on port 8787 does not call these functions. The bearer is stored in `/etc/forever-memories-staff.env` and is not in git.
