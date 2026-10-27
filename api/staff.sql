@@ -114,18 +114,18 @@ security definer
 set search_path = public
 as $$
 declare
-  notes text;
+  clean_notes text;
 begin
   if p_status not in ('new', 'contacted', 'planning', 'booked', 'closed', 'spam') then
     raise exception 'bad_status' using errcode = 'P0001';
   end if;
-  notes := nullif(btrim(coalesce(p_staff_notes, '')), '');
-  if notes is not null and char_length(notes) > 4000 then
+  clean_notes := nullif(btrim(coalesce(p_staff_notes, '')), '');
+  if clean_notes is not null and char_length(clean_notes) > 4000 then
     raise exception 'notes_too_long' using errcode = 'P0001';
   end if;
   update inquiries
   set status = p_status,
-      staff_notes = notes,
+      staff_notes = clean_notes,
       staff_updated_at = clock_timestamp()
   where inquiries.id = p_id;
   if not found then
