@@ -121,7 +121,7 @@ The domain API object does not include MX hostnames. This organization uses `htt
 | MX | `forevermemoriestravel.com` | `mx2.zoho.com` priority 20 | `4732ab8a4e850e68b56f36eb306628b0` | 120 |
 | MX | `forevermemoriestravel.com` | `mx3.zoho.com` priority 50 | `a098638d6e521d1e427f8e286a0b4e94` | 120 |
 
-Authoritative DNS at `apollo.ns.cloudflare.com` returned those three hosts and no other apex MX. Zoho `verifyMxRecord` then returned `mxstatus` true. Ryan's Admin Console then showed "Your domain's MX Records are pointed to Zoho" with the same three hosts and priorities. No test message was sent.
+Authoritative DNS at `apollo.ns.cloudflare.com` returned those three hosts and no other apex MX. Zoho `verifyMxRecord` then returned `mxstatus` true. Ryan's Admin Console then showed "Your domain's MX Records are pointed to Zoho" with the same three hosts and priorities. No test message was sent during that DNS change.
 
 If a later Tools & Configurations screen for this organization shows different hosts, replace these three with that screen's hosts and update this file in the same change.
 
@@ -178,7 +178,7 @@ Separate the two mail paths before changing DNS.
 | Form confirmation | Cloudflare Email Sending from `donotreply@forevermemoriestravel.com` | [EMAIL-SENDING.md](EMAIL-SENDING.md). Apex MX does not send this mail. |
 | A person's mailbox | Apex MX | `Resolve-DnsName forevermemoriestravel.com -Type MX -Server apollo.ns.cloudflare.com` |
 
-The published apex MX hosts are `mx.zoho.com` priority 10, `mx2.zoho.com` priority 20, and `mx3.zoho.com` priority 50. `jennifer@forevermemoriestravel.com` and `michael@forevermemoriestravel.com` exist in Zoho. No test message to either mailbox was sent.
+The published apex MX hosts are `mx.zoho.com` priority 10, `mx2.zoho.com` priority 20, and `mx3.zoho.com` priority 50. `jennifer@forevermemoriestravel.com` and `michael@forevermemoriestravel.com` exist in Zoho. Jennifer's 2026-10-26 test is in her mailbox. Michael's matching test is not confirmed. The checks are under [Mailbox delivery checks](#mailbox-delivery-checks).
 
 If the apex MX has been changed to Zoho and new mail does not arrive:
 
@@ -194,6 +194,14 @@ If the apex MX has been changed to Zoho and new mail does not arrive:
 
 If the form stops sending, follow [EMAIL-SENDING.md](EMAIL-SENDING.md). Do not point the form at Zoho to repair it.
 
+## Mailbox delivery checks
+
+`ryanhocking@gmail.com` sent one message to each mailbox through the Gmail API. Jennifer's subject was `Test message for Jennifer`, Gmail id `1a1765b73ba95fb4`, Date `Sun, 25 Oct 2026 20:57:46 -0700` (2026-10-26 03:57:46 UTC). Michael's subject was `Test message for Michael`, Gmail id `1a1765b7a46d9033`, Date `Sun, 25 Oct 2026 20:57:48 -0700` (2026-10-26 03:57:48 UTC).
+
+A Zoho search of Jennifer's account `7209151000000008002` returned HTTP 200, and the subject `Test message for Jennifer` was in that mailbox. The same search was repeated on 2026-10-27 and the subject was still there.
+
+On 2026-10-27, Michael's account `8855991000000008002` returned folders HTTP 404 with `Invalid Input`, and a search for `Test message for Michael` returned HTTP 500 with `Internal Error`. Delivery into that mailbox is not confirmed. Do not send another message to either mailbox from this record. Do not reset Michael's password. Leave DMARC at `p=none`.
+
 ## What this file is not
 
-It is not a statement that a test message was delivered. Zoho verified the MX records and the SPF record. Both `jennifer@forevermemoriestravel.com` and `michael@forevermemoriestravel.com` exist.
+Zoho verified the MX records and the SPF record. Both mailboxes exist. Jennifer's 2026-10-26 test was found in her mailbox. Michael's test was not confirmed. This file is not a statement that Michael's message was delivered, and it is not a reason to change DMARC from `p=none`.

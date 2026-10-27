@@ -1,6 +1,6 @@
 # Email Sending
 
-This file is the record of Cloudflare Email Sending for `forevermemoriestravel.com`. It was checked against the Cloudflare API, public DNS at 1.1.1.1, the live site, and one delivered test message on 2026-10-14.
+This file is the record of Cloudflare Email Sending for `forevermemoriestravel.com`. It was checked against the Cloudflare API, public DNS at 1.1.1.1, the live site, and one delivered test message on 2026-10-14. An inquiry-form delivery on 2026-10-27 is recorded below. That later check did not repeat the DNS read.
 
 The inquiry API sends through Cloudflare Email Sending as `donotreply@forevermemoriestravel.com`. The domain is already onboarded. Do not onboard it again.
 
@@ -105,3 +105,24 @@ One message. No retry.
 | Home page | `https://forevermemoriestravel.com` returned HTTP 200 |
 
 No inquiry row was created. The subject was `FMT Email Sending test 2026-10-14 donotreply`.
+
+## Inquiry form delivery on 2026-10-27
+
+One form post to `https://inquiries.forevermemoriestravel.com/inquiries`. No retry. The visitor address was `ryanhocking@gmail.com`, so both messages went to the verified destination. A send to that address does not count against the 3,000 included Email Sending messages.
+
+| Check | Result |
+| --- | --- |
+| Inquiry id | `69b49075-4863-42a2-9841-0dade9cd99e9` |
+| submitted_at | `2026-10-27T14:00:39.240801-06:00` |
+| API | HTTP 201, `visitor_email` `sent`, `ryan_email` `sent` |
+| Visitor Gmail id | `1a17ef3672b68b46` |
+| Visitor subject | `We have your trip request` |
+| Visitor date | Tue, 27 Oct 2026 20:00:39 +0000 |
+| Lead Gmail id | `1a17ef3646f681ed` |
+| Lead subject | `Trip request — Forever Memories Travel` |
+| Lead date | Tue, 27 Oct 2026 20:00:41 +0000 |
+| From | `Forever Memories Travel <donotreply@forevermemoriestravel.com>` |
+| To and Reply-To | `ryanhocking@gmail.com` |
+| SPF, DKIM, and DMARC | pass on both messages |
+
+`https://forevermemoriestravel.com/thanks.html?ref=69b49075-4863-42a2-9841-0dade9cd99e9&mail=sent` showed the heading "We have your request.", the detail "A confirmation email was sent to the address you entered.", and the reference line for that id. Do not send another inquiry to repeat this check.
