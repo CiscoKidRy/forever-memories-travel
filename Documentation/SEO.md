@@ -43,6 +43,8 @@ These four pages are guides. Each one has planning notes, a checklist, short ans
 
 Each guide is indexable. The head starts with the same Google tag snippet as the home page: `gtag('config', 'G-GYBCCKG2FJ')` only. No `page_location`, no Tag Manager container, no `noindex`, and no JSON-LD. The home page keeps the only `WebSite` and `TravelAgency` graph. Do not add `FAQPage`, a second Organization, or a Person block on a guide. A guide does not load `site.js` and does not send `generate_lead`.
 
+The visible heading on each guide is one sentence about that trip. Family: "A family vacation planned around who is going." Parks: "Disney and Orlando park days with time between the gates." Cruises: "The cruise, the cabin, and the ports." International: "An international trip farther from home, still a clear plan." Do not add a second sentence under a heading only to lengthen the page. Do not put cruise, Disney, or Orlando on the family heading or the international heading.
+
 The canonical URL, the Open Graph URL, the visible citation line, and the sitemap `<loc>` are the four addresses in the table, plus `https://forevermemoriestravel.com/` for the home page. Open Graph `og:type` is `website`. The Open Graph title, description, and URL match that page. `og:image` and `twitter:image` are `https://forevermemoriestravel.com/assets/logo.jpg`. `twitter:card` is `summary`. The Twitter title and description match the page. `twitter:image:alt` is `Forever Memories Travel logo`. There is no `twitter:site`.
 
 On each guide, the header link "Plan a trip" and both "Start a trip request" buttons use `https://forevermemoriestravel.com/#plan`. The other header links go to the home page and to these four guides. The home page and `thanks.html` keep their current in-page links. Each home-page service card has one text link to its guide. That link sits outside any `data-field` element, so published homepage copy does not remove it.
@@ -73,7 +75,7 @@ Allow: /
 Sitemap: https://forevermemoriestravel.com/sitemap.xml
 ```
 
-[sitemap.xml](../sitemap.xml) lists five addresses: `https://forevermemoriestravel.com/`, `https://forevermemoriestravel.com/family.html`, `https://forevermemoriestravel.com/parks.html`, `https://forevermemoriestravel.com/cruises.html`, and `https://forevermemoriestravel.com/international.html`. Each entry is a `<loc>` only. Do not add `index.html`, the `www` hostname, `thanks.html`, `llms.txt`, images, CSS, or JavaScript. `www.forevermemoriestravel.com` already redirects to the apex. Do not add `lastmod`, `changefreq`, or `priority`.
+[sitemap.xml](../sitemap.xml) lists five addresses: `https://forevermemoriestravel.com/`, `https://forevermemoriestravel.com/family.html`, `https://forevermemoriestravel.com/parks.html`, `https://forevermemoriestravel.com/cruises.html`, and `https://forevermemoriestravel.com/international.html`. Each entry is a `<loc>` only. Do not add `index.html`, the `www` hostname, `thanks.html`, `llms.txt`, the IndexNow key file, images, CSS, or JavaScript. `www.forevermemoriestravel.com` already redirects to the apex. Do not add `lastmod`, `changefreq`, or `priority`.
 
 Do not disallow `/thanks.html` in `robots.txt`. [thanks.html](../thanks.html) carries `noindex` and a canonical address of `https://forevermemoriestravel.com/thanks.html`. A crawler has to be allowed to see `noindex`. The confirmation address can contain `?ref=`, and that query is an inquiry id. It stays out of the sitemap and out of the Google tag page address. The tag rule for that is in [GOOGLE-TAG.md](GOOGLE-TAG.md).
 
@@ -164,13 +166,27 @@ HTTPS. During the audit, `http://forevermemoriestravel.com/` returned 200 and th
 
 On 2026-10-14 Ryan submitted `https://forevermemoriestravel.com/sitemap.xml` in Google Search Console and in Bing Webmaster Tools. That submission is done. After these guides are published, that same sitemap URL is the one both tools already have. Resubmitting it asks for a crawl of the new addresses. It does not assign a rank. Do not ask for the first submission again as if it had not happened. Search Console: `https://search.google.com/search-console/sitemaps?resource_id=https://forevermemoriestravel.com/`. Bing: `https://www.bing.com/webmasters/sitemaps?siteUrl=https://forevermemoriestravel.com/`.
 
+## IndexNow
+
+[366c18cf679c83c5af52812d4fe6dbe8.txt](../366c18cf679c83c5af52812d4fe6dbe8.txt) is the IndexNow key file. It is UTF-8. The body is the key `366c18cf679c83c5af52812d4fe6dbe8` and nothing else. The file sits at the site root so IndexNow can fetch `https://forevermemoriestravel.com/366c18cf679c83c5af52812d4fe6dbe8.txt`. It is not a page. Do not add it to the sitemap. Do not disallow it in `robots.txt`. The current `Allow: /` already lets a crawler read it.
+
+Send the list once, after that URL returns the key. Post JSON to `https://api.indexnow.org/indexnow` with `Content-Type: application/json; charset=utf-8`. The `host` is `forevermemoriestravel.com`. The `key` is the file body. The `keyLocation` is `https://forevermemoriestravel.com/366c18cf679c83c5af52812d4fe6dbe8.txt`. The `urlList` is only these five addresses:
+
+- `https://forevermemoriestravel.com/`
+- `https://forevermemoriestravel.com/family.html`
+- `https://forevermemoriestravel.com/parks.html`
+- `https://forevermemoriestravel.com/cruises.html`
+- `https://forevermemoriestravel.com/international.html`
+
+Do not include `thanks.html`, `index.html`, the `www` host, or the extensionless `/family`, `/parks`, `/cruises`, and `/international` addresses. One post is enough. IndexNow shares a received list with the participating engines, including Bing. Google does not read IndexNow. DuckDuckGo is not a participant. It can show a page later only if Bing has indexed it. HTTP 200 means the list was received. HTTP 202 means it was received and key validation is still pending. Neither code assigns a rank. Do not send the list on a schedule, and do not send it before the key file is live. Do not submit the sitemap again as if 2026-10-14 had not happened.
+
 ## A later change
 
 Update this file in the same pull request when a change does any of these:
 
 - Adds or rewrites a sentence so the five words above move or disappear
 - Adds a public page that should be crawled, or a page that should stay out of search
-- Changes `robots.txt`, `sitemap.xml`, `llms.txt`, the canonical address, the Twitter card, or the `TravelAgency` block
+- Changes `robots.txt`, `sitemap.xml`, `llms.txt`, the IndexNow key file, the canonical address, the Twitter card, or the `TravelAgency` block
 - Adds a social profile or any other external link that is meant to become a backlink
 - Adds a street, phone, rating, or price to the page and then to the structured data
 - Links to a domain listed in the SEOptimer section, adds a Facebook pixel, or changes the apex SPF records
