@@ -18,6 +18,11 @@ function attemptKey(body) {
   return attempt.key;
 }
 
+function honeypotValue() {
+  const control = form.elements.namedItem("fmt_hp");
+  return control ? control.value : "";
+}
+
 function lockButton() {
   locked = true;
   submitButton.disabled = true;
@@ -82,10 +87,10 @@ form.addEventListener("submit", async (event) => {
   if (locked) {
     return;
   }
-  if (form.company.value) {
+  if (!form.reportValidity()) {
     return;
   }
-  if (!form.reportValidity()) {
+  if (honeypotValue()) {
     return;
   }
 
@@ -97,7 +102,7 @@ form.addEventListener("submit", async (event) => {
     when: form.when.value,
     who: form.who.value,
     notes: form.notes.value,
-    company: form.company.value,
+    company: honeypotValue(),
     source_url: `${location.origin}${location.pathname}`,
   };
   body.idempotency_key = attemptKey(body);

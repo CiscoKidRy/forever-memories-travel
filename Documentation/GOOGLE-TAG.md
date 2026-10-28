@@ -122,7 +122,7 @@ The call sets `transport_type` to `beacon` so the hit can leave as the next page
 
 These paths do not send `generate_lead`:
 
-- The honeypot field `company` has a value.
+- The hidden honeypot has a value. That request is not sent.
 - The form fails `reportValidity()`.
 - The button is already locked.
 - The API returns anything other than HTTP 201 with an id, including 409 and 429.
