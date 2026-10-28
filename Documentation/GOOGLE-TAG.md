@@ -139,7 +139,9 @@ These paths do not send `generate_lead`:
 | `section_name` | `intro`, `vacations`, `parks`, `cruises`, `international`, `steps`, or `plan` |
 | `visible_msec` | integer milliseconds, 1000 to 1800000 |
 
-The event does not include a name, email, phone, notes, inquiry id, or pointer position. It is not a key event. Hash links do not send an extra `page_view`. Register `section_name` as an event-scoped custom dimension and `visible_msec` as a custom metric on property `properties/558909334` before a report groups by them.
+The event does not include a name, email, phone, notes, inquiry id, or pointer position. It is not a key event. Hash links do not send an extra `page_view`.
+
+Property `properties/558909334` has an event-scoped custom dimension `section_name`, display name "Section name", and a custom metric `visible_msec`, display name "Visible time", unit milliseconds. Both were created on 27 October 2026. A last-28-days report grouped by `customEvent:section_name` returned only the dimension value `(not set)`. It did not return `intro`, `vacations`, `parks`, `cruises`, `international`, `steps`, or `plan`. An exact `eventName` filter for `section_visible` still returned events, and those events were not broken out under the seven section names. The Statistics screen shows a dash when a section has no row.
 
 ## Privacy notice
 
