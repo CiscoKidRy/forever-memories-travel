@@ -18,6 +18,7 @@ UUID_TEXT = re.compile(
     r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
     re.IGNORECASE,
 )
+AUTHOR_TEXT = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
 
 def database_url():
@@ -40,6 +41,21 @@ def token_ok(header):
     return diff == 0
 
 
+def clean_author(value):
+    if not isinstance(value, str):
+        return None
+    author = value.strip().lower()
+    if not 3 <= len(author) <= 254 or AUTHOR_TEXT.fullmatch(author) is None:
+        return None
+    return author
+
+
+def author_for_notes(notes, raw_author):
+    if not isinstance(notes, str) or not notes.strip():
+        return ""
+    return clean_author(raw_author)
+
+
 def note_dict(row):
     created = row[2]
     deleted = row[3]
@@ -48,6 +64,7 @@ def note_dict(row):
         "body": row[1],
         "created_at": created.isoformat() if created else None,
         "deleted_at": deleted.isoformat() if deleted else None,
+        "created_by": row[4],
     }
 
 
@@ -143,7 +160,7 @@ class Handler(BaseHTTPRequestHandler):
         if not isinstance(payload, dict):
             self._send(400, {"error": "invalid"})
             return
-        if set(payload) - {"status", "staff_notes"}:
+        if set(payload) - {"status", "staff_notes", "author"}:
             self._send(400, {"error": "invalid"})
             return
         status = payload.get("status")
@@ -151,13 +168,17 @@ class Handler(BaseHTTPRequestHandler):
         if status not in STATUSES or not isinstance(notes, str) or len(notes) > 4000:
             self._send(400, {"error": "invalid"})
             return
+        author = author_for_notes(notes, payload.get("author", ""))
+        if author is None:
+            self._send(400, {"error": "invalid"})
+            return
         inquiry_id = path[len(prefix):]
         try:
             with psycopg.connect(database_url()) as conn:
                 with conn.cursor() as cur:
                     cur.execute(
-                        "select update_inquiry_staff(%s, %s, %s)",
-                        (inquiry_id, status, notes),
+                        "select update_inquiry_staff(%s, %s, %s, %s)",
+                        (inquiry_id, status, notes, author),
                     )
                 conn.commit()
         except psycopg.Error as exc:
@@ -206,7 +227,7 @@ class Handler(BaseHTTPRequestHandler):
 
     def _note_entries(self, cur, inquiry_id):
         cur.execute(
-            "select id, body, created_at, deleted_at from list_staff_notes(%s)",
+            "select id, body, created_at, deleted_at, created_by from list_staff_notes(%s)",
             (inquiry_id,),
         )
         return [note_dict(item) for item in cur.fetchall()]
