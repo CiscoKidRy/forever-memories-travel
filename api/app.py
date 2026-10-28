@@ -55,6 +55,11 @@ EMAIL_SEND_URL = (
 FROM_ADDRESS = "donotreply@forevermemoriestravel.com"
 FROM_NAME = "Forever Memories Travel"
 REPLY_TO = "ryanhocking@gmail.com"
+LEAD_NOTICE_SUBJECT = "Trip request — Forever Memories Travel"
+LEAD_NOTICE_TO = (
+    "ryanhocking@gmail.com",
+    "jennifer@forevermemoriestravel.com",
+)
 
 
 def database_url():
@@ -480,7 +485,7 @@ def deliver(fields, stored):
         return stored["visitor_email"], stored["ryan_email"]
     when = format_when(stored["submitted_at"])
     visitor_status = "failed"
-    ryan_status = "failed"
+    ryan_status = "sent"
     try:
         send_mail(
             fields["email"],
@@ -493,18 +498,19 @@ def deliver(fields, stored):
         visitor_status = "failed"
     except Exception:
         traceback.print_exc()
-    try:
-        send_mail(
-            "ryanhocking@gmail.com",
-            "Trip request — Forever Memories Travel",
-            lead_plain(fields, stored, when),
-            lead_html(fields, stored, when),
-        )
-        ryan_status = "sent"
-    except MailOff:
-        ryan_status = "failed"
-    except Exception:
-        traceback.print_exc()
+    for recipient in LEAD_NOTICE_TO:
+        try:
+            send_mail(
+                recipient,
+                LEAD_NOTICE_SUBJECT,
+                lead_plain(fields, stored, when),
+                lead_html(fields, stored, when),
+            )
+        except MailOff:
+            ryan_status = "failed"
+        except Exception:
+            traceback.print_exc()
+            ryan_status = "failed"
     try:
         mark_email(stored["id"], "visitor", visitor_status)
         mark_email(stored["id"], "ryan", ryan_status)

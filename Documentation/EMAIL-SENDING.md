@@ -82,7 +82,7 @@ Use a Bearer token that can send mail. On this PC that token is in Windows Crede
 }
 ```
 
-`from` is a string or an object with `address` and `name`. The REST field is `address`, not `email`. `reply_to` is snake case. Provide `text` and `html`. The live visitor subject is `We have your trip request`. The live staff subject is `Trip request — Forever Memories Travel`, and that copy still goes to `ryanhocking@gmail.com`.
+`from` is a string or an object with `address` and `name`. The REST field is `address`, not `email`. `reply_to` is snake case. Provide `text` and `html`. The live visitor subject is `We have your trip request`. The live staff subject is `Trip request — Forever Memories Travel`. That copy is sent once to `ryanhocking@gmail.com` and once to `jennifer@forevermemoriestravel.com`. `reply_to` stays `ryanhocking@gmail.com`. The notice is recorded as `sent` only when both sends are accepted. If either send fails, `ryan_email_status` is `failed`. A send to `jennifer@forevermemoriestravel.com` counts toward the 3,000 included messages. A send to `ryanhocking@gmail.com` does not.
 
 `send_mail` in `api/app.py` POSTs to the Email Sending API. It does not use `smtp.gmail.com`. The Bearer token is `CLOUDFLARE_EMAIL_API_TOKEN` in `/etc/forever-memories-inquiries.env`. The sample name, with a blank value, is in `api/.env.example`. Do not commit the token.
 
@@ -124,5 +124,7 @@ One form post to `https://inquiries.forevermemoriestravel.com/inquiries`. No ret
 | From | `Forever Memories Travel <donotreply@forevermemoriestravel.com>` |
 | To and Reply-To | `ryanhocking@gmail.com` |
 | SPF, DKIM, and DMARC | pass on both messages |
+
+That 2026-10-27 lead had one recipient. Later code also sends the same subject to `jennifer@forevermemoriestravel.com`. Do not send another inquiry to repeat this check.
 
 `https://forevermemoriestravel.com/thanks.html?ref=69b49075-4863-42a2-9841-0dade9cd99e9&mail=sent` showed the heading "We have your request.", the detail "A confirmation email was sent to the address you entered.", and the reference line for that id. Do not send another inquiry to repeat this check.
