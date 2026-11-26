@@ -77,6 +77,8 @@ Sitemap: https://forevermemoriestravel.com/sitemap.xml
 
 Do not disallow `/thanks.html` in `robots.txt`. [thanks.html](../thanks.html) carries `noindex` and a canonical address of `https://forevermemoriestravel.com/thanks.html`. A crawler has to be allowed to see `noindex`. The confirmation address can contain `?ref=`, and that query is an inquiry id. It stays out of the sitemap and out of the Google tag page address. The tag rule for that is in [GOOGLE-TAG.md](GOOGLE-TAG.md).
 
+The folder [test/](../test/) is the test site at `https://forevermemoriestravel.com/test/`. Every page there sends `noindex, nofollow`. Those addresses stay out of [sitemap.xml](../sitemap.xml) and out of [llms.txt](../llms.txt). [robots.txt](../robots.txt) does not disallow `/test/`. A crawler has to be allowed to fetch the pages so it can read `noindex`, the same reason `/thanks.html` stays allowed. The test pages do not use the Google tag. Their canonical addresses point at `https://forevermemoriestravel.com/test/` and the pages under it. They do not use the live home page or the live guides as their canonical address.
+
 The home page canonical address is `https://forevermemoriestravel.com/`. The Open Graph title, description, and URL match the title, description, and canonical address. The image is `https://forevermemoriestravel.com/assets/logo.jpg`.
 
 The home page also has Twitter card tags: `twitter:card` is `summary`, and the title, description, image, and image alt match the title, description, and logo. There is no `twitter:site` handle. Do not invent one. `thanks.html` does not need those tags.

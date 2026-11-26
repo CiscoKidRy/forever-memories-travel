@@ -26,6 +26,8 @@ One Analytics account holds one property for this domain. Public pages use that 
 
 The inquiry API at `inquiries.forevermemoriestravel.com` is not a website. The tag does not go on that API, on a JSON response, or in email.
 
+The test pages under [test/](../test/) are published at `https://forevermemoriestravel.com/test/`. They do not load the Google tag. A visit to a test page must not enter property `properties/558909334`. They are not a second measurement ID. The live pages at the site root keep the tag.
+
 ## Property settings
 
 | Setting | Value |
