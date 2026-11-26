@@ -28,7 +28,7 @@ Trip confirmations leave through Cloudflare Email Sending from the inquiry API a
 
 ## Google tag
 
-Public pages on `forevermemoriestravel.com`, and any new public site on that domain, use one Google tag with measurement ID `G-GYBCCKG2FJ`. The rules are on the repository front page, [README.md](README.md#google-tag). The property record is [Documentation/GOOGLE-TAG.md](Documentation/GOOGLE-TAG.md).
+Public pages on `forevermemoriestravel.com`, and any new public site on that domain, use one Google tag with measurement ID `G-GYBCCKG2FJ`. The test pages in `test/` are the exception. They do not load the tag, they send `noindex, nofollow`, and they are not a second measurement ID. A visit there must not enter the live property. The rules are on the repository front page, [README.md](README.md#google-tag). The property record is [Documentation/GOOGLE-TAG.md](Documentation/GOOGLE-TAG.md).
 
 Do not add a Tag Manager container. Do not create a second property, stream, or measurement ID for a new hostname on this domain. Do not send names, email addresses, phone numbers, notes, or record ids to Google. Send `generate_lead` only after a stored request. Update `Documentation/GOOGLE-TAG.md` in the same pull request when tagging changes.
 
